@@ -40,12 +40,12 @@ namespace Core.Candles
         
         private float GetBodyRandomValue()
         {
-            return Random.Range(_settings.MinBodyValue, _settings.MaxBodyValue);
+            return Random.Range(_settings.MinBodySize, _settings.MaxBodySize);
         }
 
         private float GetWickRandomValue()
         {
-            return Random.Range(0f, _settings.MaxWickValue);
+            return Random.Range(0f, _settings.MaxWickSize);
         }
         
         private bool GetRandomSign()

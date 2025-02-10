@@ -1,42 +1,43 @@
 using Core.Candles;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Core
 {
     [CreateAssetMenu(fileName = "GameSettings", menuName = "Core/GameSettings")]
     public class GameSettings : ScriptableObject
     {
-        [SerializeField] 
-        public CandleProvider CandlePrefab;
+        [field: Header("Prefabs")] 
+        [field: SerializeField]
+        public CandleProvider CandlePrefab { get; private set; }
 
-        [SerializeField] 
-        public Color LongColor;
+        [field: SerializeField]
+        public Color LongColor { get; private set; }
 
-        [SerializeField] 
-        public Color ShortColor;
+        [field: SerializeField]
+        public Color ShortColor { get; private set; }
+        
+        [field: Header("Candle size")] 
+        [field: SerializeField]
+        public float BodyWidth { get; private set; }
+        
+        [field: SerializeField]
+        public float WickWidth { get; private set; }
+        
+        [field: Header("Animation")] 
+        [field: SerializeField]
+        public float AnimationDuration { get; private set; }
+        
+        [field: SerializeField]
+        public float CandleSpawnOffset { get; private set; }
+        
+        [field: Header("Candle size")] 
+        [field: SerializeField]
+        public float MinBodySize { get; private set; }
 
-        [SerializeField] 
-        public float AnimationDuration;
+        [field: SerializeField]
+        public float MaxBodySize { get; private set; }
         
-        [SerializeField] 
-        public float XSpawnOffset;
-        
-        [SerializeField] 
-        [Header("Candle size")] 
-        public float BodyXSize;
-        
-        [SerializeField]
-        public float WickXSize;
-        
-        [SerializeField] 
-        [Header("Price random")] 
-        public float MinBodyValue;
-
-        [SerializeField]
-        public float MaxBodyValue;
-        
-        [SerializeField]
-        public float MaxWickValue;
+        [field: SerializeField]
+        public float MaxWickSize { get; private set; }
     }
 }

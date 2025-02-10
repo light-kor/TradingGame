@@ -13,6 +13,9 @@ namespace Core.Candles
 
         [SerializeField] 
         private SpriteRenderer wick;
+        
+        [field: SerializeField]
+        public SpriteRenderer WickWidth { get; private set; }
 
         private CandlePriceSettings _priceSettings;
         private GameSettings _settings;
@@ -37,13 +40,13 @@ namespace Core.Candles
 
         private void SetZeroYScale()
         {
-            body.transform.localScale = new Vector3(_settings.BodyXSize, 0f, 1f);
-            wick.transform.localScale = new Vector3(_settings.WickXSize, 0f, 1f);
+            body.transform.localScale = new Vector3(_settings.BodyWidth, 0f, 1f);
+            wick.transform.localScale = new Vector3(_settings.WickWidth, 0f, 1f);
         }
 
         public void SetPosition(int xPos, float lastCurrentClosePrice)
         {
-            transform.localPosition = new Vector3(xPos * _settings.XSpawnOffset, lastCurrentClosePrice, 0);
+            transform.localPosition = new Vector3(xPos * _settings.CandleSpawnOffset, lastCurrentClosePrice, 0);
         }
 
         private TweenerCore<Vector3, Vector3, VectorOptions> ScaleCandle(float targetScale, bool isAboveZero,
