@@ -3,15 +3,14 @@ using Zenject;
 
 namespace Core.Candles
 {
-    public class CandleFactory
+    public class CandlePresenterFactory
     {
         [Inject] private GameSettings _settings;
 
-        public CandleProvider SpawnCandle(float openPrice)
+        public CandlePresenter CreateCandle(float openPrice)
         {
-            CandleProvider newCandle = Object.Instantiate(_settings.CandlePrefab);
             var candlePriceSettings = CreateCandlePriceSettings(openPrice);
-            newCandle.InitCandle(candlePriceSettings, _settings);
+            CandlePresenter newCandle = new CandlePresenter(candlePriceSettings, _settings);
             return newCandle;
         }
         

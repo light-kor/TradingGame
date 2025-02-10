@@ -13,7 +13,7 @@ namespace Core
         {
             Container.BindInstance(gameSettings).AsSingle();
             
-            Container.BindInterfacesAndSelfTo<CandleFactory>()
+            Container.BindInterfacesAndSelfTo<CandlePresenterFactory>()
                 .AsSingle();
         }
     }
