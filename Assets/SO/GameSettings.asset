@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: GameSettings
   m_EditorClassIdentifier: 
   CandlePrefab: {fileID: 3709093403617985013, guid: ff00752bb224acb4c89991a92749135d, type: 3}
-  LongColor: {r: 0, g: 1, b: 0, a: 1}
-  ShortColor: {r: 1, g: 0, b: 0, a: 1}
+  LongColor: {r: 0.1254902, g: 0.69803923, b: 0.42352945, a: 1}
+  ShortColor: {r: 0.93725497, g: 0.27058825, b: 0.2901961, a: 1}
   AnimationDuration: 1
   XSpawnOffset: 0.25
   BodyXSize: 0.2
-  WickXSize: 0.05
+  WickXSize: 0.03
   MinBodyValue: 0.2
   MaxBodyValue: 1.5
   MaxWickValue: 1

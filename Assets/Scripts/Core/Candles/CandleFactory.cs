@@ -7,15 +7,15 @@ namespace Core.Candles
     {
         [Inject] private GameSettings _settings;
 
-        public CandleProvider SpawnCandle()
+        public CandleProvider SpawnCandle(float openPrice)
         {
             CandleProvider newCandle = Object.Instantiate(_settings.CandlePrefab);
-            var candlePriceSettings = CreateCandlePriceSettings();
+            var candlePriceSettings = CreateCandlePriceSettings(openPrice);
             newCandle.InitCandle(candlePriceSettings, _settings);
             return newCandle;
         }
         
-        private CandlePriceSettings CreateCandlePriceSettings()
+        private CandlePriceSettings CreateCandlePriceSettings(float openPrice)
         {
             bool isLong = GetRandomSign();
             float closePrice;
@@ -24,18 +24,23 @@ namespace Core.Candles
 
             if (isLong)
             {
-                closePrice = Random.Range(_settings.MinBodyValue, _settings.MaxBodyValue);
+                closePrice = openPrice + GetBodyRandomValue();
                 highPrice = closePrice + GetWickRandomValue();
-                lowPrice = -GetWickRandomValue();
+                lowPrice = openPrice - GetWickRandomValue();
             }
             else
             {
-                closePrice = -Random.Range(_settings.MinBodyValue, _settings.MaxBodyValue);
-                highPrice = GetWickRandomValue();
+                closePrice = openPrice - GetBodyRandomValue();
+                highPrice = openPrice + GetWickRandomValue();
                 lowPrice = closePrice - GetWickRandomValue();
             }
             
-            return new CandlePriceSettings(closePrice, highPrice, lowPrice, isLong);
+            return new CandlePriceSettings(openPrice, closePrice, highPrice, lowPrice, isLong);
+        }
+        
+        private float GetBodyRandomValue()
+        {
+            return Random.Range(_settings.MinBodyValue, _settings.MaxBodyValue);
         }
 
         private float GetWickRandomValue()

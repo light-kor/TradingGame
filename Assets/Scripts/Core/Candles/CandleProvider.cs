@@ -1,3 +1,4 @@
+using System.Collections;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
@@ -7,13 +8,18 @@ namespace Core.Candles
 {
     public class CandleProvider : MonoBehaviour
     {
-        [SerializeField] private SpriteRenderer body;
+        [SerializeField] 
+        private SpriteRenderer body;
 
-        [SerializeField] public SpriteRenderer wick;
+        [SerializeField] 
+        private SpriteRenderer wick;
 
         private CandlePriceSettings _priceSettings;
         private GameSettings _settings;
         private float _savedWickLocalY;
+        private bool _isWickSaved;
+
+        public float ClosePrice => _priceSettings.ClosePrice;
 
         public void InitCandle(CandlePriceSettings priceSettings, GameSettings settings)
         {
@@ -37,96 +43,105 @@ namespace Core.Candles
 
         public void SetPosition(int xPos, float lastCurrentClosePrice)
         {
-            transform.position = new Vector3(xPos * _settings.XSpawnOffset, lastCurrentClosePrice, 0);
+            transform.localPosition = new Vector3(xPos * _settings.XSpawnOffset, lastCurrentClosePrice, 0);
         }
 
-        public float GetClosePosition()
+        private TweenerCore<Vector3, Vector3, VectorOptions> ScaleCandle(float targetScale, bool isAboveZero,
+            float duration)
         {
-            return _priceSettings.ClosePrice;
+            return body.transform.DOScaleY(targetScale, duration)
+                .SetEase(Ease.Linear) //TODO: Выбрать лучший вариант
+                .OnUpdate(() => UpdateBodyPosition(isAboveZero));
         }
 
-        private TweenerCore<Vector3, Vector3, VectorOptions> ScaleCandle(float endValue, bool isLong, float animTime)
+        private void UpdateBodyPosition(bool isAboveZero)
         {
-            return body.transform.DOScaleY(endValue, animTime).SetEase(Ease.Linear)
-                .OnUpdate(() => SyncBodyPositionWithScale(isLong));
-        }
-
-        private void SyncBodyPositionWithScale(bool isLong)
-        {
-            var bodyTransform = body.transform;
-            var currentYPosition = bodyTransform.localScale.y / 2f;
-            var newPosition = bodyTransform.localPosition;
-            newPosition.y = isLong ? currentYPosition : -currentYPosition;
-            bodyTransform.localPosition = newPosition;
-        }
-        
-        private void SyncWickWithScaleFirst(bool isLong)
-        {
-            var wickTransform = wick.transform;
-            var currentYPosition = wickTransform.localScale.y / 2f;
-            var newPosition = wickTransform.localPosition;
-            newPosition.y = isLong ? currentYPosition : -currentYPosition;
-            wickTransform.localPosition = newPosition;
-        }
-        
-        private void SyncWickWithScaleSecond(bool isLong)
-        {
-            int sign = isLong ? 1 : -1;
-            var wickTransform = wick.transform;
-            var currentYPosition = _savedWickLocalY + (wickTransform.localScale.y * sign);
-            var newPosition = wickTransform.localPosition;
-            newPosition.y = currentYPosition;
-            wickTransform.localPosition = newPosition;
-        }
-
-        public void AnimateCandle()
-        {
-            float lowScale = Mathf.Abs(_priceSettings.LowPrice);
-            float highScale = Mathf.Abs(_priceSettings.HighPrice);
-            float closeScale = Mathf.Abs(_priceSettings.ClosePrice);
+            float currentScale = Mathf.Abs(body.transform.localScale.y);
+            float halfHeight = currentScale / 2f;
+            Vector3 newLocalPos = body.transform.localPosition;
             
-            if (_priceSettings.IsLong)
+            // Если анимация "растёт вверх" – нижняя сторона остаётся на уровне 0, значит центр = halfHeight.
+            // Если вниз – верхняя сторона зафиксирована, значит центр = -halfHeight.
+            newLocalPos.y = isAboveZero ? halfHeight : -halfHeight;
+            body.transform.localPosition = newLocalPos;
+        }
+        
+        private void SetWickScaleSizeAndPosition(float targetScale, bool isAboveZero)
+        {
+            float currentScale = targetScale;
+
+            if (_isWickSaved)
+                currentScale += _savedWickLocalY;
+            else
             {
-                float scaleMoveValue = lowScale + lowScale + highScale + (highScale - closeScale);
-                float lowScaleTime = (lowScale / scaleMoveValue) * _settings.AnimationDuration;
-                float highScaleTime = (highScale / scaleMoveValue) * _settings.AnimationDuration;
-                float closeScaleTime = ((highScale - closeScale) / scaleMoveValue) * _settings.AnimationDuration;
-                    
-                Sequence animSequence = DOTween.Sequence();
-                animSequence.AppendCallback(() => SetColor(false));
-                
-                animSequence.Append(ScaleCandle(lowScale, false, lowScaleTime));//.OnUpdate(() => SyncWickWithScaleFirst(false));
-                animSequence.Append(ScaleCandle(0, false, lowScaleTime));
-                
-                animSequence.AppendCallback(() => _savedWickLocalY = wick.transform.localPosition.y);
-                animSequence.AppendCallback(() => SetColor(true));
-                
-                animSequence.Append(ScaleCandle(highScale, true, highScaleTime));//.OnUpdate(SyncWickWithScaleSecond);
-                animSequence.Append(ScaleCandle(closeScale, true, closeScaleTime));
-                animSequence.Play();
-                
+                _savedWickLocalY = targetScale;
+                _isWickSaved = true;
+            }
+            
+            var wickTransform = wick.transform;
+            Vector3 newLocalPos = wickTransform.localPosition;
+
+            if (!_isWickSaved)
+            {
+                float halfHeight = currentScale / 2f;
+                newLocalPos.y = isAboveZero ? halfHeight : -halfHeight;
             }
             else
             {
-                float scaleMoveValue = highScale + highScale + lowScale + (lowScale - closeScale);
-                float highScaleTime = (highScale / scaleMoveValue) * _settings.AnimationDuration;
-                float lowScaleTime = (lowScale / scaleMoveValue) * _settings.AnimationDuration;
-                float closeScaleTime = ((lowScale - closeScale) / scaleMoveValue) * _settings.AnimationDuration;
-                    
-                // Шортовая свеча: сначала до HighPrice, потом до LowPrice, затем до ClosePrice
-                Sequence animSequence = DOTween.Sequence();
-                animSequence.AppendCallback(() => SetColor(true));
-                
-                animSequence.Append(ScaleCandle(highScale, true, highScaleTime));//.OnUpdate(() => SyncWickWithScaleFirst(false));
-                animSequence.Append(ScaleCandle(0, true, highScaleTime));
-                
-                animSequence.AppendCallback(() => _savedWickLocalY = wick.transform.localPosition.y);
-                animSequence.AppendCallback(() => SetColor(false));
-                
-                animSequence.Append(ScaleCandle(lowScale, false, lowScaleTime));//.OnUpdate(SyncWickWithScaleSecond);
-                animSequence.Append(ScaleCandle(closeScale, false, closeScaleTime));
-                animSequence.Play();
+                float halfHeight = targetScale / 2f;
+                newLocalPos.y += isAboveZero ? halfHeight : -halfHeight;
             }
+            
+            wickTransform.localPosition = newLocalPos;
+                
+            Vector3 localScale = wickTransform.localScale;
+            localScale.y = currentScale;
+            wickTransform.localScale = localScale;
+        }
+
+        public IEnumerator AnimateCandle()
+        {
+            float firstTargetScale;
+            float secondTargetScale = 0f;
+            float thirdTargetScale;
+            float fourthTargetScale = Mathf.Abs(_priceSettings.ClosePrice - _priceSettings.OpenPrice);
+
+            bool isLong = _priceSettings.IsLong;
+            
+            if (isLong)
+            {
+                firstTargetScale = Mathf.Abs(_priceSettings.LowPrice - _priceSettings.OpenPrice);
+                thirdTargetScale = Mathf.Abs(_priceSettings.HighPrice - _priceSettings.OpenPrice);
+
+            }
+            else
+            {
+                firstTargetScale = Mathf.Abs(_priceSettings.HighPrice - _priceSettings.OpenPrice);
+                thirdTargetScale = Mathf.Abs(_priceSettings.LowPrice - _priceSettings.OpenPrice);
+            }
+
+            Sequence animSequence = DOTween.Sequence();
+
+            float scaleMoveValue = firstTargetScale + firstTargetScale + thirdTargetScale + (thirdTargetScale - fourthTargetScale);
+            float firstScaleTime = (firstTargetScale / scaleMoveValue) * _settings.AnimationDuration;
+            float secondScaleTime = firstScaleTime;
+            float thirdScaleTime = (thirdTargetScale / scaleMoveValue) * _settings.AnimationDuration;
+            float fourthScaleTime = ((thirdTargetScale - fourthTargetScale) / scaleMoveValue) * _settings.AnimationDuration;
+
+            animSequence.AppendCallback(() => SetColor(!isLong));
+
+            animSequence.Append(ScaleCandle(firstTargetScale, !isLong, firstScaleTime)); 
+            animSequence.AppendCallback(() => SetWickScaleSizeAndPosition(firstTargetScale, !isLong));
+            animSequence.Append(ScaleCandle(secondTargetScale, !isLong, secondScaleTime));
+
+            animSequence.AppendCallback(() => SetColor(isLong));
+
+            animSequence.Append(ScaleCandle(thirdTargetScale, isLong, thirdScaleTime));
+            animSequence.AppendCallback(() => SetWickScaleSizeAndPosition(thirdTargetScale, isLong));
+            animSequence.Append(ScaleCandle(fourthTargetScale, isLong, fourthScaleTime));
+            animSequence.Play();
+
+            yield return animSequence.WaitForCompletion();
         }
     }
 }

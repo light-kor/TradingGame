@@ -7,8 +7,7 @@ namespace Core.Candles
     public class CandleSequenceController : MonoBehaviour
     {
         [Inject] private CandleFactory _candleFactory;
-        [Inject] private GameSettings _settings;
-        
+
         private float _currentClosePrice;
 
         private void Start()
@@ -21,13 +20,12 @@ namespace Core.Candles
         {
             for (int i = 0; i < candleCount; i++)
             {
-                var candle = _candleFactory.SpawnCandle();
+                var candle = _candleFactory.SpawnCandle(_currentClosePrice);
                 
                 candle.SetPosition(i, _currentClosePrice);
-                candle.AnimateCandle();
-                _currentClosePrice = candle.GetClosePosition();
-
-                yield return new WaitForSeconds(_settings.AnimationDuration);
+                yield return candle.AnimateCandle();
+                
+                _currentClosePrice = candle.ClosePrice;
             }
         }
     }
