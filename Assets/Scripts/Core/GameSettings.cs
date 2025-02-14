@@ -1,4 +1,5 @@
 using Core.Candles;
+using DG.Tweening;
 using UnityEngine;
 
 namespace Core
@@ -6,6 +7,12 @@ namespace Core
     [CreateAssetMenu(fileName = "GameSettings", menuName = "Core/GameSettings")]
     public class GameSettings : ScriptableObject
     {
+        [field: Header("Main settings")] [field: SerializeField]
+        public int CandlesPoolCount { get; private set; }
+        
+        [field: SerializeField]
+        public int CandlesSpawnCount { get; private set; }
+        
         [field: Header("Prefabs")] 
         [field: SerializeField]
         public CandleProvider CandlePrefab { get; private set; }
@@ -29,6 +36,9 @@ namespace Core
         
         [field: SerializeField]
         public float CandleSpawnOffset { get; private set; }
+        
+        [field: SerializeField]
+        public Ease AnimationEase { get; private set; }
         
         [field: Header("Candle size")] 
         [field: SerializeField]

@@ -13,16 +13,21 @@ namespace Core.Candles
         public Transform BodyTransform => body.transform;
         public Transform WickTransform => wick.transform;
 
+        public void SetActive(bool state)
+        {
+            gameObject.SetActive(state);
+        }
+        
         public void SetColor(Color color)
         {
             body.color = color;
             wick.color = color;
         }
 
-        public void ResetCandleSize(GameSettings settings)
+        public void ResetCandleSize(float bodyWidth, float wickWidth)
         {
-            body.transform.localScale = new Vector3(settings.BodyWidth, 0f, 1f);
-            wick.transform.localScale = new Vector3(settings.WickWidth, 0f, 1f);
+            body.transform.localScale = new Vector3(bodyWidth, 0f, 1f);
+            wick.transform.localScale = new Vector3(wickWidth, 0f, 1f);
         }
 
         public void SetPosition(Vector3 pos)

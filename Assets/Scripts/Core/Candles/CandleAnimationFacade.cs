@@ -3,16 +3,19 @@ using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
+using Zenject;
 
 namespace Core.Candles
 {
-    public static class CandleAnimation
+    public class CandleAnimationFacade
     {
-        public static IEnumerator AnimateCandle(this CandlePresenter presenter)
+        [Inject] private readonly GameSettings _settings;
+
+        public IEnumerator AnimateCandle(CandlePresenter presenter, bool instantlySpawn)
         {
-            CandlePriceSettings priceSettings = presenter.PriceSettings;
-            GameSettings settings = presenter.Settings;
-            CandleProvider provider = presenter.Provider;
+            float animDuration = instantlySpawn ? 0f : _settings.AnimationDuration;
+            var priceSettings = presenter.PriceSettings;
+            var provider = presenter.Provider;
 
             // Расчёт размеров сегментов анимации на основе настроек свечи.
             float firstTargetScale;
@@ -35,47 +38,45 @@ namespace Core.Candles
 
             Sequence animSequence = DOTween.Sequence();
 
-            float scaleMoveValue = firstTargetScale + firstTargetScale + thirdTargetScale +
-                                   (thirdTargetScale - fourthTargetScale);
-            float firstScaleTime = (firstTargetScale / scaleMoveValue) * settings.AnimationDuration;
+            float scaleMoveValue = firstTargetScale + firstTargetScale + thirdTargetScale + (thirdTargetScale - fourthTargetScale);
+            float firstScaleTime = (firstTargetScale / scaleMoveValue) * animDuration;
             float secondScaleTime = firstScaleTime;
-            float thirdScaleTime = (thirdTargetScale / scaleMoveValue) * settings.AnimationDuration;
-            float fourthScaleTime =
-                ((thirdTargetScale - fourthTargetScale) / scaleMoveValue) * settings.AnimationDuration;
+            float thirdScaleTime = (thirdTargetScale / scaleMoveValue) * animDuration;
+            float fourthScaleTime = ((thirdTargetScale - fourthTargetScale) / scaleMoveValue) * animDuration;
 
             // Первая часть анимации: смена цвета и масштабирование вниз (или вверх) с фитилем.
-            animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(settings, !isLong)));
+            animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(!isLong)));
 
-            animSequence.Append(provider.CreateScaleTween(firstTargetScale, !isLong, firstScaleTime));
-            animSequence.AppendCallback(() => provider.SetWickScaleSizeAndPosition(firstTargetScale, !isLong));
-            animSequence.Append(provider.CreateScaleTween(secondTargetScale, !isLong, secondScaleTime));
+            animSequence.Append(CreateScaleTween(provider, firstTargetScale, !isLong, firstScaleTime));
+            animSequence.AppendCallback(() => SetWickScaleSizeAndPosition(provider, firstTargetScale, !isLong));
+            animSequence.Append(CreateScaleTween(provider, secondTargetScale, !isLong, secondScaleTime));
 
             // Вторая часть анимации: смена цвета и масштабирование вверх (или вниз) с фитилем.
-            animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(settings, !isLong)));
+            animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(!isLong)));
 
-            animSequence.Append(provider.CreateScaleTween(thirdTargetScale, isLong, thirdScaleTime));
-            animSequence.AppendCallback(() => provider.SetWickScaleSizeAndPosition(thirdTargetScale, isLong, firstTargetScale));
-            animSequence.Append(provider.CreateScaleTween(fourthTargetScale, isLong, fourthScaleTime));
+            animSequence.Append(CreateScaleTween(provider, thirdTargetScale, isLong, thirdScaleTime));
+            animSequence.AppendCallback(() => SetWickScaleSizeAndPosition(provider, thirdTargetScale, isLong, firstTargetScale));
+            animSequence.Append(CreateScaleTween(provider, fourthTargetScale, isLong, fourthScaleTime));
 
             animSequence.Play();
 
             yield return animSequence.WaitForCompletion();
         }
 
-        private static Color GetColorByDirection(GameSettings settings, bool isLong)
+        private Color GetColorByDirection(bool isLong)
         {
-            return !isLong ? settings.LongColor : settings.ShortColor;
+            return !isLong ? _settings.LongColor : _settings.ShortColor;
         }
 
-        private static TweenerCore<Vector3, Vector3, VectorOptions> CreateScaleTween(this CandleProvider provider,
+        private TweenerCore<Vector3, Vector3, VectorOptions> CreateScaleTween(CandleProvider provider,
             float targetScale, bool isAboveZero, float duration)
         {
             return provider.BodyTransform.DOScaleY(targetScale, duration)
-                .SetEase(Ease.Linear) //TODO: Выбрать лучший вариант
+                .SetEase(_settings.AnimationEase)
                 .OnUpdate(() => UpdateBodyPosition(provider, isAboveZero));
         }
 
-        private static void UpdateBodyPosition(CandleProvider provider, bool isAboveZero)
+        private void UpdateBodyPosition(CandleProvider provider, bool isAboveZero)
         {
             float currentScale = Mathf.Abs(provider.BodyTransform.localScale.y);
             float halfHeight = currentScale / 2f;
@@ -86,7 +87,7 @@ namespace Core.Candles
             provider.BodyTransform.localPosition = newLocalPos;
         }
 
-        private static void SetWickScaleSizeAndPosition(this CandleProvider provider, float targetScale,
+        private void SetWickScaleSizeAndPosition(CandleProvider provider, float targetScale,
             bool isAboveZero, float additionalScale = 0f)
         {
             float currentScale = targetScale + additionalScale;
@@ -96,7 +97,7 @@ namespace Core.Candles
             SetWickScale(wickTransform, currentScale);
         }
 
-        private static void SetWickLocalPosition(bool isAboveZero, Transform wickTransform, float targetScale, float additionalScale)
+        private void SetWickLocalPosition(bool isAboveZero, Transform wickTransform, float targetScale, float additionalScale)
         {
             Vector3 newLocalPos = wickTransform.localPosition;
 
@@ -115,7 +116,7 @@ namespace Core.Candles
             wickTransform.localPosition = newLocalPos;
         }
 
-        private static void SetWickScale(Transform wickTransform, float currentScale)
+        private void SetWickScale(Transform wickTransform, float currentScale)
         {
             Vector3 localScale = wickTransform.localScale;
             localScale.y = currentScale;
