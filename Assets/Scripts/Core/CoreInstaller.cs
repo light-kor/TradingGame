@@ -1,4 +1,5 @@
 using Core.Candles;
+using Core.Candles.SpawnFacade;
 using Core.Pool;
 using UnityEngine;
 using Zenject;
@@ -15,13 +16,19 @@ namespace Core
         
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<CoreEventBus>()
+                .AsSingle();
+            
             Container.BindInterfacesAndSelfTo<CandlePresenterFactory>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CandlePriceSettingsFactory>()
                 .AsSingle();
             
-            Container.BindInterfacesAndSelfTo<CandleAnimationFacade>()
+            Container.BindInterfacesAndSelfTo<CandleSpawnAnimationFacade>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CandleSpawnInstantlyFacade>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CameraMoveController>()

@@ -1,4 +1,5 @@
 using System.Collections;
+using Core.Candles.SpawnFacade;
 using Core.Pool;
 using Core.UI;
 using Settings;
@@ -13,37 +14,36 @@ namespace Core.Candles
         [SerializeField] 
         private ButtonProvider continueButton;
         
-        [SerializeField] 
-        private ButtonProvider cameraMoveButton;
-        
         [Inject] private readonly CandlePriceSettingsFactory _candlePriceSettingsFactory;
         [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
-        [Inject] private readonly CandleAnimationFacade _candleAnimationFacade;
+        [Inject] private readonly CandleSpawnAnimationFacade _candleSpawnAnimationFacade;
+        [Inject] private readonly CandleSpawnInstantlyFacade _candleSpawnInstantlyFacade;
         [Inject] private readonly CameraMoveController _cameraMoveController;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly GameSettings _settings;
-
-        private CandleProvider _lastCandleProvider;
+        
         private float _currentClosePrice;
         private int _currentXPosition;
+        
+        public CandlePresenter LastCandlePresenter { get; private set; }
+        public bool SpawnInProcess { get; private set; }
+        public Vector3 LastCandleClosePosition => LastCandlePresenter.GetClosePricePosition();
 
         private void Start()
         {
             Assert.IsTrue(_settings.CandlesSpawnCount > 0);
             
             continueButton.OnButtonClicked += SpawnCandles;
-            cameraMoveButton.OnButtonClicked += UpdateCameraPosition;
 
             StartCoroutine(_candleProviderPool.InitializePool(() =>
             {
-                StartCoroutine(SpawnCandleSequence(_settings.CandlesSpawnCount, true));
+                SpawnCandleSequenceInstantly(_settings.CandlesSpawnCount);
             }));
         }
-        
+
         private void OnDestroy()
         {
             continueButton.OnButtonClicked -= SpawnCandles;
-            cameraMoveButton.OnButtonClicked -= UpdateCameraPosition;
         }
         
         private void SpawnCandles()
@@ -51,44 +51,46 @@ namespace Core.Candles
             StartCoroutine(SpawnCandleSequence(_settings.CandlesSpawnCount));
         }
 
-        private IEnumerator SpawnCandleSequence(int candleCount, bool instantlySpawn = false)
+        private IEnumerator SpawnCandleSequence(int candleCount)
+        {
+            //TODO: Надо ли в SpawnCandleSequenceInstantly?
+            SpawnInProcess = true;
+            
+            for (int i = 0; i < candleCount; i++)
+            {
+                var candle = CreateNewCandle();
+                yield return _candleSpawnAnimationFacade.AnimateCandle(candle);
+
+                _cameraMoveController.MoveCameraWithAnimation(LastCandleClosePosition);
+            }
+
+            SpawnInProcess = false;
+        }
+        
+        private void SpawnCandleSequenceInstantly(int candleCount)
         {
             for (int i = 0; i < candleCount; i++)
             {
-                var candle = _candlePresenterFactory.GetFreeCandlePresenter();
-                candle.PrepareProvider();
-                
-                var candlePriceSettings = _candlePriceSettingsFactory.CreateCandlePriceSettings(_currentClosePrice);
-                candle.SetPriceSettings(candlePriceSettings);
-                candle.SetPosition(_currentXPosition, _currentClosePrice);
-                
-                yield return _candleAnimationFacade.AnimateCandle(candle, instantlySpawn);
-
-                _lastCandleProvider = candle.Provider;
-                _currentClosePrice = candle.PriceSettings.ClosePrice;
-                _currentXPosition++;
-                
-                if (instantlySpawn == false)
-                    UpdateCameraPosition(false);
+                var candle = CreateNewCandle();
+                _candleSpawnInstantlyFacade.SpawnCandleInstantly(candle);
             }
 
-            UpdateCameraPosition(instantlySpawn);
-        }
-        
-        private void UpdateCameraPosition()
-        {
-            UpdateCameraPosition(false);
+            _cameraMoveController.MoveCameraInstantly(LastCandleClosePosition);
         }
 
-        private void UpdateCameraPosition(bool instantlySpawn)
+        private CandlePresenter CreateNewCandle()
         {
-            //TODO: Оно приведёт нас в центр свечи? Или не факт. Мб надо += _currentClosePrice
-            var lastCandlePosition = _lastCandleProvider.transform.position;
-            
-            if (instantlySpawn)
-                _cameraMoveController.MoveCameraInstantly(lastCandlePosition);
-            else
-                _cameraMoveController.MoveCameraWithAnimation(lastCandlePosition);
+            var candle = _candlePresenterFactory.GetFreeCandlePresenter();
+            candle.PrepareProvider();
+
+            var candlePriceSettings = _candlePriceSettingsFactory.CreateCandlePriceSettings(_currentClosePrice);
+            candle.SetPriceSettings(candlePriceSettings);
+            candle.SetPosition(_currentXPosition, _currentClosePrice);
+
+            LastCandlePresenter = candle;
+            _currentClosePrice = candle.PriceSettings.ClosePrice;
+            _currentXPosition++;
+            return candle;
         }
     }
 }

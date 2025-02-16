@@ -10,6 +10,7 @@ namespace Core
     public class CameraMoveController
     {
         [Inject] private readonly AnimationSettings _animationSettings;
+        [Inject] private readonly CoreEventBus _coreEventBus;
         [Inject] private readonly Camera _mainCamera;
 
         private TweenerCore<Vector3, Vector3, VectorOptions> _activeAnimation;
@@ -19,6 +20,7 @@ namespace Core
         {
             var targetPosition = ConvertCameraToCandlePosition(candlePosition);
             _mainCamera.transform.position = targetPosition;
+            UpdatePriceLine();
         }
 
         private Vector3 ConvertCameraToCandlePosition(Vector3 candlePosition)
@@ -27,6 +29,11 @@ namespace Core
             var zPos = _mainCamera.transform.position.z;
             
             return new Vector3(xPos, candlePosition.y, zPos);
+        }
+        
+        private void UpdatePriceLine()
+        {
+            _coreEventBus.FireNeedUpdatePriceLineByCameraMove();
         }
 
         public void MoveCameraWithAnimation(Vector3 candlePosition)
@@ -42,7 +49,9 @@ namespace Core
             _isAnimationActive = true;
 
             _activeAnimation = _mainCamera.transform.DOMove(targetPosition, _animationSettings.CameraMoveDuration)
-                .SetEase(_animationSettings.CameraMoveEase).OnComplete(HandleAnimationFinish);
+                .SetEase(_animationSettings.CameraMoveEase)
+                .OnUpdate(UpdatePriceLine)
+                .OnComplete(HandleAnimationFinish);
         }
 
         private void HandleAnimationFinish()
