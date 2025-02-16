@@ -1,3 +1,4 @@
+using Settings;
 using UnityEngine;
 
 namespace Core.Candles

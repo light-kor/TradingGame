@@ -1,6 +1,5 @@
 using Core.Candles;
 using Core.Pool;
-using Core.UI;
 using UnityEngine;
 using Zenject;
 
@@ -9,18 +8,13 @@ namespace Core
     public class CoreInstaller : MonoInstaller
     {
         [SerializeField] 
-        private GameSettings gameSettings;
+        private CandleProvidersContainer candleProvidersContainer;
         
         [SerializeField] 
-        private ContinueButtonProvider continueButtonProvider;
-       
-        [SerializeField] 
-        private CandleProvidersContainer candleProvidersContainer;
+        private Camera mainCamera;
         
         public override void InstallBindings()
         {
-            Container.BindInstance(gameSettings).AsSingle();
-            
             Container.BindInterfacesAndSelfTo<CandlePresenterFactory>()
                 .AsSingle();
             
@@ -29,14 +23,14 @@ namespace Core
             
             Container.BindInterfacesAndSelfTo<CandleAnimationFacade>()
                 .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CameraMoveController>()
+                .AsSingle()
+                .WithArguments(mainCamera);
 
             Container.BindInterfacesAndSelfTo<CandleProviderPool>()
                 .AsSingle()
                 .WithArguments(candleProvidersContainer);
-            
-            Container.Bind<ContinueButtonProvider>()
-                .FromInstance(continueButtonProvider)
-                .AsSingle();
         }
     }
 }

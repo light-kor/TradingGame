@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Core.Candles;
+using Settings;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;

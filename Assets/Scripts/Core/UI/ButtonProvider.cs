@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Core.UI
 {
-    public class ContinueButtonProvider : MonoBehaviour
+    public class ButtonProvider : MonoBehaviour
     {
         [SerializeField] 
         private Button button;

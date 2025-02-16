@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Core.Pool;
+using Settings;
 using Zenject;
 
 namespace Core.Candles

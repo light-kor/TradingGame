@@ -1,6 +1,7 @@
 using System.Collections;
 using Core.Pool;
 using Core.UI;
+using Settings;
 using UnityEngine;
 using UnityEngine.Assertions;
 using Zenject;
@@ -9,15 +10,20 @@ namespace Core.Candles
 {
     public class CandleSequenceController : MonoBehaviour
     {
-        private const int START_X_POSITION = -16;
+        [SerializeField] 
+        private ButtonProvider continueButton;
+        
+        [SerializeField] 
+        private ButtonProvider cameraMoveButton;
         
         [Inject] private readonly CandlePriceSettingsFactory _candlePriceSettingsFactory;
         [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
-        [Inject] private readonly ContinueButtonProvider _continueButtonProvider;
         [Inject] private readonly CandleAnimationFacade _candleAnimationFacade;
+        [Inject] private readonly CameraMoveController _cameraMoveController;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly GameSettings _settings;
 
+        private CandleProvider _lastCandleProvider;
         private float _currentClosePrice;
         private int _currentXPosition;
 
@@ -25,11 +31,9 @@ namespace Core.Candles
         {
             Assert.IsTrue(_settings.CandlesSpawnCount > 0);
             
-            _continueButtonProvider.OnButtonClicked += SpawnCandles;
+            continueButton.OnButtonClicked += SpawnCandles;
+            cameraMoveButton.OnButtonClicked += UpdateCameraPosition;
 
-            _currentXPosition = START_X_POSITION;
-            _currentClosePrice = 0;
-            
             StartCoroutine(_candleProviderPool.InitializePool(() =>
             {
                 StartCoroutine(SpawnCandleSequence(_settings.CandlesSpawnCount, true));
@@ -38,7 +42,8 @@ namespace Core.Candles
         
         private void OnDestroy()
         {
-            _continueButtonProvider.OnButtonClicked -= SpawnCandles;
+            continueButton.OnButtonClicked -= SpawnCandles;
+            cameraMoveButton.OnButtonClicked -= UpdateCameraPosition;
         }
         
         private void SpawnCandles()
@@ -58,10 +63,32 @@ namespace Core.Candles
                 candle.SetPosition(_currentXPosition, _currentClosePrice);
                 
                 yield return _candleAnimationFacade.AnimateCandle(candle, instantlySpawn);
-                
+
+                _lastCandleProvider = candle.Provider;
                 _currentClosePrice = candle.PriceSettings.ClosePrice;
                 _currentXPosition++;
+                
+                if (instantlySpawn == false)
+                    UpdateCameraPosition(false);
             }
+
+            UpdateCameraPosition(instantlySpawn);
+        }
+        
+        private void UpdateCameraPosition()
+        {
+            UpdateCameraPosition(false);
+        }
+
+        private void UpdateCameraPosition(bool instantlySpawn)
+        {
+            //TODO: Оно приведёт нас в центр свечи? Или не факт. Мб надо += _currentClosePrice
+            var lastCandlePosition = _lastCandleProvider.transform.position;
+            
+            if (instantlySpawn)
+                _cameraMoveController.MoveCameraInstantly(lastCandlePosition);
+            else
+                _cameraMoveController.MoveCameraWithAnimation(lastCandlePosition);
         }
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using DG.Tweening;
 using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
+using Settings;
 using UnityEngine;
 using Zenject;
 
@@ -9,11 +10,12 @@ namespace Core.Candles
 {
     public class CandleAnimationFacade
     {
+        [Inject] private readonly AnimationSettings _animationSettings;
         [Inject] private readonly GameSettings _settings;
 
         public IEnumerator AnimateCandle(CandlePresenter presenter, bool instantlySpawn)
         {
-            float animDuration = instantlySpawn ? 0f : _settings.AnimationDuration;
+            float animDuration = instantlySpawn ? 0f : _animationSettings.CandleAnimationDuration;
             var priceSettings = presenter.PriceSettings;
             var provider = presenter.Provider;
 
@@ -72,7 +74,7 @@ namespace Core.Candles
             float targetScale, bool isAboveZero, float duration)
         {
             return provider.BodyTransform.DOScaleY(targetScale, duration)
-                .SetEase(_settings.AnimationEase)
+                .SetEase(_animationSettings.CandleAnimationEase)
                 .OnUpdate(() => UpdateBodyPosition(provider, isAboveZero));
         }
 

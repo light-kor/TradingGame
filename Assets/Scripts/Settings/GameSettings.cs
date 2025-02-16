@@ -1,17 +1,20 @@
 using Core.Candles;
-using DG.Tweening;
 using UnityEngine;
 
-namespace Core
+namespace Settings
 {
-    [CreateAssetMenu(fileName = "GameSettings", menuName = "Core/GameSettings")]
+    [CreateAssetMenu(fileName = "GameSettings", menuName = "Settings/GameSettings")]
     public class GameSettings : ScriptableObject
     {
-        [field: Header("Main settings")] [field: SerializeField]
+        [field: Header("Main settings")] 
+        [field: SerializeField]
         public int CandlesPoolCount { get; private set; }
         
         [field: SerializeField]
         public int CandlesSpawnCount { get; private set; }
+        
+        [field: SerializeField]
+        public float CandleSpawnOffset { get; private set; }
         
         [field: Header("Prefabs")] 
         [field: SerializeField]
@@ -23,24 +26,14 @@ namespace Core
         [field: SerializeField]
         public Color ShortColor { get; private set; }
         
-        [field: Header("Candle size")] 
+        [field: Header("Candle width")] 
         [field: SerializeField]
         public float BodyWidth { get; private set; }
         
         [field: SerializeField]
         public float WickWidth { get; private set; }
         
-        [field: Header("Animation")] 
-        [field: SerializeField]
-        public float AnimationDuration { get; private set; }
-        
-        [field: SerializeField]
-        public float CandleSpawnOffset { get; private set; }
-        
-        [field: SerializeField]
-        public Ease AnimationEase { get; private set; }
-        
-        [field: Header("Candle size")] 
+        [field: Header("Candle price size")] 
         [field: SerializeField]
         public float MinBodySize { get; private set; }
 
