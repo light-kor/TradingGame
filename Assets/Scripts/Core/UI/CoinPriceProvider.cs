@@ -5,7 +5,7 @@ using TMPro;
 
 namespace Core.UI
 {
-    public class PriceProvider : MonoBehaviour
+    public class CoinPriceProvider : MonoBehaviour
     {
         [SerializeField] 
         private TextMeshProUGUI priceText;

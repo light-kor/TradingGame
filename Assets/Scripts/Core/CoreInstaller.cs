@@ -1,3 +1,4 @@
+using Common.Player;
 using Core.Candles;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
@@ -14,8 +15,25 @@ namespace Core
         [SerializeField] 
         private Camera mainCamera;
         
+        [SerializeField] 
+        private FundSourceRepository fundSourceRepository;
+        
+        [SerializeField] 
+        private MoneyProvider moneyProvider;
+        
         public override void InstallBindings()
         {
+            Container.BindInterfacesAndSelfTo<MoneyFacade>()
+                .AsSingle();
+
+            Container.Bind<FundSourceRepository>()
+                .FromInstance(fundSourceRepository)
+                .AsSingle();
+            
+            Container.Bind<MoneyProvider>()
+                .FromInstance(moneyProvider)
+                .AsSingle();
+            
             Container.BindInterfacesAndSelfTo<CoreEventBus>()
                 .AsSingle();
             
