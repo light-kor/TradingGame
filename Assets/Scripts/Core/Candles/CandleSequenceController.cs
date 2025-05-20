@@ -21,6 +21,7 @@ namespace Core.Candles
         [Inject] private readonly CameraMoveController _cameraMoveController;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly GameSettings _settings;
+        [Inject] private readonly CoreEventBus _coreEventBus;
         
         private float _currentClosePrice;
         private int _currentXPosition;
@@ -76,6 +77,7 @@ namespace Core.Candles
             }
 
             _cameraMoveController.MoveCameraInstantly(LastCandleClosePosition);
+            _coreEventBus.FireCurrentPriceUpdated(LastCandlePresenter);
         }
 
         private CandlePresenter CreateNewCandle()

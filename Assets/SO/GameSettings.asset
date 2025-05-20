@@ -14,14 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <CandlesPoolCount>k__BackingField: 30
   <CandlesSpawnCount>k__BackingField: 12
+  <CandleSpawnOffset>k__BackingField: 0.27
   <CandlePrefab>k__BackingField: {fileID: 3709093403617985013, guid: ff00752bb224acb4c89991a92749135d, type: 3}
   <LongColor>k__BackingField: {r: 0.1254902, g: 0.69803923, b: 0.42352942, a: 1}
   <ShortColor>k__BackingField: {r: 0.9372549, g: 0.27058825, b: 0.2901961, a: 1}
   <BodyWidth>k__BackingField: 0.2
-  <WickWidth>k__BackingField: 0.03
-  <AnimationDuration>k__BackingField: 1
-  <CandleSpawnOffset>k__BackingField: 0.27
-  <AnimationEase>k__BackingField: 16
+  <WickWidth>k__BackingField: 0.025
   <MinBodySize>k__BackingField: 0.2
   <MaxBodySize>k__BackingField: 1.5
   <MaxWickSize>k__BackingField: 1
