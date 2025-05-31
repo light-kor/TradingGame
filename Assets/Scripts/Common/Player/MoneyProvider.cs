@@ -4,6 +4,7 @@ using Zenject;
 
 namespace Common.Player
 {
+    //TODO: Нужен презентер
     public class MoneyProvider : MonoBehaviour
     {
         [SerializeField] 

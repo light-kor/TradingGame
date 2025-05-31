@@ -1,7 +1,7 @@
-using System.Collections;
+using System;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
-using Core.UI;
+using Core.UI.Providers;
 using Settings;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -9,19 +9,17 @@ using Zenject;
 
 namespace Core.Candles
 {
-    public class CandleSequenceController : MonoBehaviour
+    public class CandleSequenceController : IInitializable, IDisposable
     {
-        [SerializeField] 
-        private ButtonProvider continueButton;
-        
         [Inject] private readonly CandlePriceSettingsFactory _candlePriceSettingsFactory;
-        [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
         [Inject] private readonly CandleSpawnAnimationFacade _candleSpawnAnimationFacade;
         [Inject] private readonly CandleSpawnInstantlyFacade _candleSpawnInstantlyFacade;
+        [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
         [Inject] private readonly CameraMoveController _cameraMoveController;
+        [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
-        [Inject] private readonly GameSettings _settings;
         [Inject] private readonly CoreEventBus _coreEventBus;
+        [Inject] private readonly GameSettings _settings;
         
         private float _currentClosePrice;
         private int _currentXPosition;
@@ -30,29 +28,31 @@ namespace Core.Candles
         public bool SpawnInProcess { get; private set; }
         public Vector3 LastCandleClosePosition => LastCandlePresenter.GetClosePricePosition();
 
-        private void Start()
+        public void Initialize()
         {
             Assert.IsTrue(_settings.CandlesSpawnCount > 0);
-            
-            continueButton.OnButtonClicked += SpawnCandles;
+            InitializeCandles();
 
-            StartCoroutine(_candleProviderPool.InitializePool(() =>
-            {
-                SpawnCandleSequenceInstantly(_settings.CandlesSpawnCount);
-            }));
+            _mainPanelProvider.ContinueButton.OnButtonClicked += SpawnCandles;
         }
-
-        private void OnDestroy()
+        
+        public void Dispose()
         {
-            continueButton.OnButtonClicked -= SpawnCandles;
+            _mainPanelProvider.ContinueButton.OnButtonClicked -= SpawnCandles;
+        }
+        
+        private async void InitializeCandles()
+        {
+            await _candleProviderPool.InitializePoolAsync();
+            SpawnCandleSequenceInstantly(_settings.CandlesSpawnCount);
         }
         
         private void SpawnCandles()
         {
-            StartCoroutine(SpawnCandleSequence(_settings.CandlesSpawnCount));
+            SpawnCandleSequence(_settings.CandlesSpawnCount);
         }
-
-        private IEnumerator SpawnCandleSequence(int candleCount)
+        
+        private async void SpawnCandleSequence(int candleCount)
         {
             //TODO: Надо ли в SpawnCandleSequenceInstantly?
             SpawnInProcess = true;
@@ -60,7 +60,7 @@ namespace Core.Candles
             for (int i = 0; i < candleCount; i++)
             {
                 var candle = CreateNewCandle();
-                yield return _candleSpawnAnimationFacade.AnimateCandle(candle);
+                await _candleSpawnAnimationFacade.AnimateCandleAsync(candle);
 
                 _cameraMoveController.MoveCameraWithAnimation(LastCandleClosePosition);
             }

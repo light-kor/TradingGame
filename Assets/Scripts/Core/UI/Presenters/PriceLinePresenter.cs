@@ -1,25 +1,26 @@
+using System;
 using Core.Candles;
-using UnityEngine;
+using Core.UI.Providers;
 using Zenject;
 
-namespace Core.UI
+namespace Core.UI.Presenters
 {
-    public class PriceLineProvider : MonoBehaviour
+    public class PriceLinePresenter : IInitializable, IDisposable
     {
-        [SerializeField] 
-        private CandleSequenceController candleSequenceController;
-
+        [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly CoreEventBus _coreEventBus;
-        
         private CandlePresenter _lastCandlePresenter;
-
-        private void Awake()
+        private PriceLineProvider _priceLineProvider;
+        
+        public void Initialize()
         {
+            _priceLineProvider = _mainPanelProvider.PriceLineProvider;
+            
             _coreEventBus.OnCurrentPriceUpdated += UpdateLastCandleData;
             _coreEventBus.OnNeedUpdatePriceLineByCameraMove += UpdatePriceLineByCameraMove;
         }
 
-        private void OnDestroy()
+        public void Dispose()
         {
             _coreEventBus.OnCurrentPriceUpdated -= UpdateLastCandleData;
             _coreEventBus.OnNeedUpdatePriceLineByCameraMove -= UpdatePriceLineByCameraMove;
@@ -35,18 +36,15 @@ namespace Core.UI
         {
             if (_lastCandlePresenter == null)
                 return;
-            
-            var currentPrice = _lastCandlePresenter.CurrentPrice;
-            
-            var linePosition = transform.position;
-            linePosition.y = currentPrice;
-            transform.position = linePosition;
+
+            _priceLineProvider.UpdateLinePosition(_lastCandlePresenter);
         }
         
         private void UpdatePriceLineByCameraMove()
         {
-            if (candleSequenceController.SpawnInProcess)
-                return;
+            //TODO: Надо?
+            // if (candleSequenceController.SpawnInProcess)
+            //     return;
             
             UpdateLinePosition();
         }

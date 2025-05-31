@@ -1,11 +1,13 @@
 using System;
+using TriInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Core.UI
+namespace Core.UI.Common
 {
     public class ButtonProvider : MonoBehaviour
     {
+        [Required]
         [SerializeField] 
         private Button button;
 

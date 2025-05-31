@@ -1,7 +1,7 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Core.Candles;
+using Cysharp.Threading.Tasks;
 using Settings;
 using UnityEngine;
 using Zenject;
@@ -16,20 +16,19 @@ namespace Core.Pool
 
         private Queue<CandleProvider> _candlesPoll;
 
-        public IEnumerator InitializePool(Action callback)
+        public async UniTask InitializePoolAsync(CancellationToken ct = default)
         {
-            var candleInstantiateOperation = Object.InstantiateAsync(_settings.CandlePrefab, _settings.CandlesPoolCount,
+            var handle = Object.InstantiateAsync(
+                _settings.CandlePrefab,
+                _settings.CandlesPoolCount,
                 _candleProvidersContainer.Transform);
 
-            while (!candleInstantiateOperation.isDone)
-                yield return null;
+            await handle.ToUniTask(cancellationToken: ct);
 
-            _candlesPoll = new Queue<CandleProvider>();
+            _candlesPoll = new Queue<CandleProvider>(handle.Result.Length);
 
-            foreach (var candle in candleInstantiateOperation.Result)
+            foreach (var candle in handle.Result)
                 StoreProvider(candle);
-
-            callback?.Invoke();
         }
 
         private void StoreProvider(CandleProvider candle)
@@ -37,7 +36,7 @@ namespace Core.Pool
             candle.SetActive(false);
             _candlesPoll.Enqueue(candle);
         }
-        
+
         public void ReleaseInstance(CandleProvider candle)
         {
             StoreProvider(candle);

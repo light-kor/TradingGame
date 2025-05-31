@@ -2,6 +2,7 @@ using Common.Player;
 using Core.Candles;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
+using TriInspector;
 using UnityEngine;
 using Zenject;
 
@@ -9,17 +10,17 @@ namespace Core
 {
     public class CoreInstaller : MonoInstaller
     {
+        [Required]
         [SerializeField] 
         private CandleProvidersContainer candleProvidersContainer;
         
+        [Required]
         [SerializeField] 
         private Camera mainCamera;
         
+        [Required]
         [SerializeField] 
         private FundSourceRepository fundSourceRepository;
-        
-        [SerializeField] 
-        private MoneyProvider moneyProvider;
         
         public override void InstallBindings()
         {
@@ -30,11 +31,10 @@ namespace Core
                 .FromInstance(fundSourceRepository)
                 .AsSingle();
             
-            Container.Bind<MoneyProvider>()
-                .FromInstance(moneyProvider)
-                .AsSingle();
-            
             Container.BindInterfacesAndSelfTo<CoreEventBus>()
+                .AsSingle();
+
+            Container.BindInterfacesAndSelfTo<CandleSequenceController>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CandlePresenterFactory>()

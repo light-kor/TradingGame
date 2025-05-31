@@ -1,10 +1,11 @@
 using Core.Candles;
+using TMPro;
 using UnityEngine;
 using Zenject;
-using TMPro;
 
-namespace Core.UI
+namespace Core.UI.Providers
 {
+    //TODO: Нужен презентер
     public class CoinPriceProvider : MonoBehaviour
     {
         [SerializeField] 
