@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8214f4e0dc7b41bd814847ae8f2fffb5, type: 3}
   m_Name: GameSettings
   m_EditorClassIdentifier: 
-  <CandlesPoolCount>k__BackingField: 30
+  <CandlesPoolCount>k__BackingField: 50
   <CandlesSpawnCount>k__BackingField: 12
   <CandleSpawnOffset>k__BackingField: 0.27
   <CandlePrefab>k__BackingField: {fileID: 3709093403617985013, guid: ff00752bb224acb4c89991a92749135d, type: 3}

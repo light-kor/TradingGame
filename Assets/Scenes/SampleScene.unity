@@ -251,7 +251,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 4}
   m_SizeDelta: {x: 2200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &359612431
@@ -562,7 +562,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Restart
+  m_text: Stop
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -700,7 +700,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 15
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -893,8 +893,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccff4a5fce25b147a4f585e446c3a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  continueButton: {fileID: 1963082345}
+  startSpawnButton: {fileID: 1963082345}
+  stopSpawnButton: {fileID: 1129385445}
   playerMoneyProvider: {fileID: 66318281}
+  coinPriceProvider: {fileID: 1656636700}
   priceLineProvider: {fileID: 395691652}
 --- !u!1 &782277479
 GameObject:
@@ -1000,7 +1002,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Continue
+  m_text: Start
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1159,7 +1161,7 @@ GameObject:
   - component: {fileID: 1129385446}
   - component: {fileID: 1129385445}
   m_Layer: 5
-  m_Name: Restart
+  m_Name: Stop
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1702,7 +1704,7 @@ GameObject:
   - component: {fileID: 1963082342}
   - component: {fileID: 1963082345}
   m_Layer: 5
-  m_Name: Continue
+  m_Name: Start
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

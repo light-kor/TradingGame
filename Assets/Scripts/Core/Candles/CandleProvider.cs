@@ -1,12 +1,15 @@
+using TriInspector;
 using UnityEngine;
 
 namespace Core.Candles
 {
     public class CandleProvider : MonoBehaviour
     {
+        [Required]
         [SerializeField] 
         private SpriteRenderer body;
 
+        [Required]
         [SerializeField] 
         private SpriteRenderer wick;
         

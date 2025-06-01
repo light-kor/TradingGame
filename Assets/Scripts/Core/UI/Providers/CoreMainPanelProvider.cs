@@ -1,4 +1,3 @@
-using Common.Player;
 using Core.UI.Common;
 using TriInspector;
 using UnityEngine;
@@ -9,18 +8,28 @@ namespace Core.UI.Providers
     {
         [Required]
         [SerializeField]
-        private ButtonProvider continueButton;
+        private ButtonProvider startSpawnButton;
         
         [Required]
         [SerializeField]
-        private MoneyProvider playerMoneyProvider;
+        private ButtonProvider stopSpawnButton;
+        
+        [Required]
+        [SerializeField]
+        private PlayerMoneyProvider playerMoneyProvider;
+        
+        [Required]
+        [SerializeField]
+        private CoinPriceProvider coinPriceProvider;
         
         [Required]
         [SerializeField]
         private PriceLineProvider priceLineProvider;
         
-        public ButtonProvider ContinueButton => continueButton;
-        public MoneyProvider PlayerMoneyProvider => playerMoneyProvider;
+        public ButtonProvider StartSpawnButton => startSpawnButton;
+        public ButtonProvider StopSpawnButton => stopSpawnButton;
+        public PlayerMoneyProvider PlayerMoneyProvider => playerMoneyProvider;
+        public CoinPriceProvider CoinPriceProvider => coinPriceProvider;
         public PriceLineProvider PriceLineProvider => priceLineProvider;
     }
 }

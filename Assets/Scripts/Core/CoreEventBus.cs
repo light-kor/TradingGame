@@ -5,17 +5,17 @@ namespace Core
 {
     public class CoreEventBus
     {
-        public event Action<CandlePresenter> OnCurrentPriceUpdated = delegate {  };
-        public event Action OnNeedUpdatePriceLineByCameraMove = delegate {  };
+        public event Action<CandlePresenter> OnCandleSpawned = delegate {  };
+        public event Action OnCameraMoved = delegate {  };
 
         public void FireCurrentPriceUpdated(CandlePresenter currentCandle)
         {
-            OnCurrentPriceUpdated.Invoke(currentCandle);
+            OnCandleSpawned.Invoke(currentCandle);
         }
         
-        public void FireNeedUpdatePriceLineByCameraMove()
+        public void FireCameraMoved()
         {
-            OnNeedUpdatePriceLineByCameraMove.Invoke();
+            OnCameraMoved.Invoke();
         }
     }
 }

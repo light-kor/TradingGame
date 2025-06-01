@@ -1,10 +1,12 @@
 using Core.Candles;
+using TriInspector;
 using UnityEngine;
 
 namespace Core.UI.Providers
 {
     public class PriceLineProvider : MonoBehaviour
     {
+        [Required]
         [SerializeField] 
         public Transform lineTransform;
         

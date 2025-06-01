@@ -1,10 +1,11 @@
 using System;
+using System.Threading;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
 using Core.UI.Providers;
+using Cysharp.Threading.Tasks;
 using Settings;
 using UnityEngine;
-using UnityEngine.Assertions;
 using Zenject;
 
 namespace Core.Candles
@@ -21,51 +22,74 @@ namespace Core.Candles
         [Inject] private readonly CoreEventBus _coreEventBus;
         [Inject] private readonly GameSettings _settings;
         
+        private CancellationTokenSource _spawnCandlesCts;
         private float _currentClosePrice;
         private int _currentXPosition;
         
+        public bool IsSpawning { get; private set; }
         public CandlePresenter LastCandlePresenter { get; private set; }
-        public bool SpawnInProcess { get; private set; }
         public Vector3 LastCandleClosePosition => LastCandlePresenter.GetClosePricePosition();
 
         public void Initialize()
         {
-            Assert.IsTrue(_settings.CandlesSpawnCount > 0);
             InitializeCandles();
 
-            _mainPanelProvider.ContinueButton.OnButtonClicked += SpawnCandles;
+            _mainPanelProvider.StartSpawnButton.OnButtonClicked += StartSpawnCandles;
+            _mainPanelProvider.StopSpawnButton.OnButtonClicked += StopSpawn;
         }
         
         public void Dispose()
         {
-            _mainPanelProvider.ContinueButton.OnButtonClicked -= SpawnCandles;
+            _mainPanelProvider.StartSpawnButton.OnButtonClicked -= StartSpawnCandles;
+            _mainPanelProvider.StopSpawnButton.OnButtonClicked -= StopSpawn;
         }
         
         private async void InitializeCandles()
         {
             await _candleProviderPool.InitializePoolAsync();
-            SpawnCandleSequenceInstantly(_settings.CandlesSpawnCount);
+            SpawnCandleSequenceInstantly(_settings.CandlesPoolCount);
         }
         
-        private void SpawnCandles()
+        private async void StartSpawnCandles()
         {
-            SpawnCandleSequence(_settings.CandlesSpawnCount);
-        }
-        
-        private async void SpawnCandleSequence(int candleCount)
-        {
-            //TODO: Надо ли в SpawnCandleSequenceInstantly?
-            SpawnInProcess = true;
+            if (IsSpawning)
+            {
+                StopSpawn();
+                await WaitUntilSpawningFinishedAsync();
+            }
             
-            for (int i = 0; i < candleCount; i++)
+            IsSpawning = true;
+            _spawnCandlesCts = new CancellationTokenSource();
+            SpawnCandleInfinite(_spawnCandlesCts.Token);
+        }
+        
+        
+        private async void SpawnCandleInfinite(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
             {
                 var candle = CreateNewCandle();
                 await _candleSpawnAnimationFacade.AnimateCandleAsync(candle);
-
+            
+                if (token.IsCancellationRequested) 
+                    break;
+            
                 _cameraMoveController.MoveCameraWithAnimation(LastCandleClosePosition);
             }
+            
+            IsSpawning = false;
+            _spawnCandlesCts?.Dispose();
+            _spawnCandlesCts = null;
+        }
 
-            SpawnInProcess = false;
+        private void StopSpawn()
+        {
+            _spawnCandlesCts?.Cancel();
+        }
+        
+        public UniTask WaitUntilSpawningFinishedAsync()
+        {
+            return UniTask.WaitUntil(() => !IsSpawning);
         }
         
         private void SpawnCandleSequenceInstantly(int candleCount)

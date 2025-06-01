@@ -13,7 +13,7 @@ namespace Core.Candles.SpawnFacade
         [Inject] private readonly CoreEventBus _coreEventBus;
 
         /// <summary>
-        /// Анимирует появление свечи. Аллокаций нет (UniTask) и можно отменить, если объект уничтожен.
+        /// Анимация движения свечи с телом и хвостом
         /// </summary>
         public async UniTask AnimateCandleAsync(CandlePresenter presenter, CancellationToken ct = default)
         {
@@ -58,8 +58,6 @@ namespace Core.Candles.SpawnFacade
 
             animSequence.Play();
 
-            // DOTween → UniTask без аллокаций
-            //await seq.AsyncWaitForCompletion(ct);
             await animSequence.ToUniTask(cancellationToken: ct);
         }
 

@@ -20,7 +20,7 @@ namespace Core
         {
             var targetPosition = ConvertCameraToCandlePosition(candlePosition);
             _mainCamera.transform.position = targetPosition;
-            UpdatePriceLine();
+            InvokeCameraMovedEvent();
         }
 
         private Vector3 ConvertCameraToCandlePosition(Vector3 candlePosition)
@@ -31,9 +31,9 @@ namespace Core
             return new Vector3(xPos, candlePosition.y, zPos);
         }
         
-        private void UpdatePriceLine()
+        private void InvokeCameraMovedEvent()
         {
-            _coreEventBus.FireNeedUpdatePriceLineByCameraMove();
+            _coreEventBus.FireCameraMoved();
         }
 
         public void MoveCameraWithAnimation(Vector3 candlePosition)
@@ -50,7 +50,7 @@ namespace Core
 
             _activeAnimation = _mainCamera.transform.DOMove(targetPosition, _animationSettings.CameraMoveDuration)
                 .SetEase(_animationSettings.CameraMoveEase)
-                .OnUpdate(UpdatePriceLine)
+                .OnUpdate(InvokeCameraMovedEvent)
                 .OnComplete(HandleAnimationFinish);
         }
 

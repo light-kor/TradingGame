@@ -1,4 +1,5 @@
 using Core.Candles;
+using TriInspector;
 using UnityEngine;
 
 namespace Settings
@@ -11,12 +12,10 @@ namespace Settings
         public int CandlesPoolCount { get; private set; }
         
         [field: SerializeField]
-        public int CandlesSpawnCount { get; private set; }
-        
-        [field: SerializeField]
         public float CandleSpawnOffset { get; private set; }
         
         [field: Header("Prefabs")] 
+        [field: Required]
         [field: SerializeField]
         public CandleProvider CandlePrefab { get; private set; }
 

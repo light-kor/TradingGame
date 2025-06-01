@@ -18,6 +18,12 @@ namespace Core.UI
                 .FromInstance(mainPanelProvider)
                 .AsSingle();
 
+            Container.BindInterfacesAndSelfTo<PlayerMoneyPresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CoinPricePresenter>()
+                .AsSingle();
+            
             Container.BindInterfacesAndSelfTo<PriceLinePresenter>()
                 .AsSingle();
         }

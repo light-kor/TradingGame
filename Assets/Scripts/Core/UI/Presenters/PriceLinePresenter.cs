@@ -7,6 +7,7 @@ namespace Core.UI.Presenters
 {
     public class PriceLinePresenter : IInitializable, IDisposable
     {
+        [Inject] private readonly CandleSequenceController _candleSequenceController;
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly CoreEventBus _coreEventBus;
         private CandlePresenter _lastCandlePresenter;
@@ -16,14 +17,14 @@ namespace Core.UI.Presenters
         {
             _priceLineProvider = _mainPanelProvider.PriceLineProvider;
             
-            _coreEventBus.OnCurrentPriceUpdated += UpdateLastCandleData;
-            _coreEventBus.OnNeedUpdatePriceLineByCameraMove += UpdatePriceLineByCameraMove;
+            _coreEventBus.OnCandleSpawned += UpdateLastCandleData;
+            _coreEventBus.OnCameraMoved += UpdatePriceLineByCameraMoved;
         }
 
         public void Dispose()
         {
-            _coreEventBus.OnCurrentPriceUpdated -= UpdateLastCandleData;
-            _coreEventBus.OnNeedUpdatePriceLineByCameraMove -= UpdatePriceLineByCameraMove;
+            _coreEventBus.OnCandleSpawned -= UpdateLastCandleData;
+            _coreEventBus.OnCameraMoved -= UpdatePriceLineByCameraMoved;
         }
 
         private void UpdateLastCandleData(CandlePresenter currentCandle)
@@ -40,11 +41,10 @@ namespace Core.UI.Presenters
             _priceLineProvider.UpdateLinePosition(_lastCandlePresenter);
         }
         
-        private void UpdatePriceLineByCameraMove()
+        private void UpdatePriceLineByCameraMoved()
         {
-            //TODO: Надо?
-            // if (candleSequenceController.SpawnInProcess)
-            //     return;
+            if (_candleSequenceController.IsSpawning)
+                return;
             
             UpdateLinePosition();
         }
