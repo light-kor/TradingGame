@@ -8,28 +8,43 @@ namespace Core.UI.Providers
     {
         [Required]
         [SerializeField]
-        private ButtonProvider startSpawnButton;
+        private CurrencyProvider playerMoneyProvider;
         
         [Required]
         [SerializeField]
-        private ButtonProvider stopSpawnButton;
-        
-        [Required]
-        [SerializeField]
-        private PlayerMoneyProvider playerMoneyProvider;
-        
-        [Required]
-        [SerializeField]
-        private CoinPriceProvider coinPriceProvider;
+        private CurrencyProvider coinPriceProvider;
         
         [Required]
         [SerializeField]
         private PriceLineProvider priceLineProvider;
         
-        public ButtonProvider StartSpawnButton => startSpawnButton;
-        public ButtonProvider StopSpawnButton => stopSpawnButton;
-        public PlayerMoneyProvider PlayerMoneyProvider => playerMoneyProvider;
-        public CoinPriceProvider CoinPriceProvider => coinPriceProvider;
+        [Required]
+        [SerializeField]
+        private PositionSizeSelectProvider positionSizeSelectProvider;
+        
+        [Required]
+        [SerializeField]
+        private ButtonProvider longButton;
+        
+        [Required]
+        [SerializeField]
+        private ButtonProvider shortButton;
+        
+        [Required]
+        [SerializeField]
+        private ButtonProvider closePositionButton;
+        
+        [Required]
+        [SerializeField]
+        private CurrentPositionProvider currentPositionProvider;
+        
+        public CurrencyProvider PlayerMoneyProvider => playerMoneyProvider;
+        public CurrencyProvider CoinPriceProvider => coinPriceProvider;
         public PriceLineProvider PriceLineProvider => priceLineProvider;
+        public PositionSizeSelectProvider PositionSizeSelectProvider => positionSizeSelectProvider;
+        public ButtonProvider LongButton => longButton;
+        public ButtonProvider ShortButton => shortButton;
+        public ButtonProvider ClosePositionButton => closePositionButton;
+        public CurrentPositionProvider CurrentPositionProvider => currentPositionProvider;
     }
 }

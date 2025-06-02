@@ -17,13 +17,13 @@ namespace Core.UI.Presenters
         {
             _priceLineProvider = _mainPanelProvider.PriceLineProvider;
             
-            _coreEventBus.OnCandleSpawned += UpdateLastCandleData;
+            _coreEventBus.OnCurrentPriceUpdated += UpdateLastCandleData;
             _coreEventBus.OnCameraMoved += UpdatePriceLineByCameraMoved;
         }
 
         public void Dispose()
         {
-            _coreEventBus.OnCandleSpawned -= UpdateLastCandleData;
+            _coreEventBus.OnCurrentPriceUpdated -= UpdateLastCandleData;
             _coreEventBus.OnCameraMoved -= UpdatePriceLineByCameraMoved;
         }
 

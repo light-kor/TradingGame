@@ -1,5 +1,6 @@
 using System;
 using Common.Player;
+using Core.UI.Common;
 using Core.UI.Providers;
 using Zenject;
 
@@ -10,13 +11,14 @@ namespace Core.UI.Presenters
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly MoneyFacade _moneyFacade;
         
-        private PlayerMoneyProvider _moneyProvider;
+        private CurrencyProvider _moneyProvider;
         
         public void Initialize()
         {
             _moneyProvider = _mainPanelProvider.PlayerMoneyProvider;
             
             _moneyFacade.OnMoneyChanged += UpdatePlayerMoneyText;
+            UpdatePlayerMoneyText();
         }
 
         public void Dispose()
@@ -26,7 +28,7 @@ namespace Core.UI.Presenters
 
         private void UpdatePlayerMoneyText()
         {
-            _moneyProvider.UpdateValueText(_moneyFacade.MoneyValue);
+            _moneyProvider.SetIntValue(_moneyFacade.MoneyValue);
         }
     }
 }

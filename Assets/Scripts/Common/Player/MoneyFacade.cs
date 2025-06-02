@@ -1,4 +1,5 @@
 using System;
+using Settings;
 using UnityEngine;
 using Zenject;
 
@@ -6,8 +7,6 @@ namespace Common.Player
 {
     public class MoneyFacade : IInitializable
     {
-        private const string MONEY = "Money";
-        
         [Inject] private readonly FundSourceRepository _fundSourceRepository;
         
         public int MoneyValue { get; private set; }
@@ -16,9 +15,9 @@ namespace Common.Player
         
         public void Initialize()
         {
-            if (PlayerPrefsUtils.HasKey(MONEY))
+            if (PlayerPrefsUtils.HasKey(Const.MONEY))
             {
-                int savedMoney = PlayerPrefsUtils.LoadInt(MONEY);
+                int savedMoney = PlayerPrefsUtils.LoadInt(Const.MONEY);
                 UpdateMoneyValue(savedMoney);
                 Debug.LogError($"HasSavedMoney {MoneyValue}");
                 return;
@@ -29,15 +28,20 @@ namespace Common.Player
             Debug.LogError($"GetRandomFundSource {source.Header} - {source.Value}");
         }
         
-        public void ChangeMoneyValue(int change)
+        public void IncreaseMoney(int change)
         {
             UpdateMoneyValue(MoneyValue + change);
+        }
+        
+        public void DecreaseMoney(int change)
+        {
+            UpdateMoneyValue(MoneyValue - change);
         }
 
         private void UpdateMoneyValue(int value)
         {
             MoneyValue = value;
-            PlayerPrefsUtils.SaveInt(MONEY, value);
+            PlayerPrefsUtils.SaveInt(Const.MONEY, value);
             OnMoneyChanged.Invoke();
         }
     }

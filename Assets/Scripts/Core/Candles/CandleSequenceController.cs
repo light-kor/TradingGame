@@ -1,8 +1,6 @@
-using System;
 using System.Threading;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
-using Core.UI.Providers;
 using Cysharp.Threading.Tasks;
 using Settings;
 using UnityEngine;
@@ -10,14 +8,13 @@ using Zenject;
 
 namespace Core.Candles
 {
-    public class CandleSequenceController : IInitializable, IDisposable
+    public class CandleSequenceController : IInitializable
     {
         [Inject] private readonly CandlePriceSettingsFactory _candlePriceSettingsFactory;
         [Inject] private readonly CandleSpawnAnimationFacade _candleSpawnAnimationFacade;
         [Inject] private readonly CandleSpawnInstantlyFacade _candleSpawnInstantlyFacade;
         [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
         [Inject] private readonly CameraMoveController _cameraMoveController;
-        [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly CoreEventBus _coreEventBus;
         [Inject] private readonly GameSettings _settings;
@@ -29,19 +26,11 @@ namespace Core.Candles
         public bool IsSpawning { get; private set; }
         public CandlePresenter LastCandlePresenter { get; private set; }
         public Vector3 LastCandleClosePosition => LastCandlePresenter.GetClosePricePosition();
+        public float CurrentPrice => LastCandlePresenter.CurrentPrice;
 
         public void Initialize()
         {
             InitializeCandles();
-
-            _mainPanelProvider.StartSpawnButton.OnButtonClicked += StartSpawnCandles;
-            _mainPanelProvider.StopSpawnButton.OnButtonClicked += StopSpawn;
-        }
-        
-        public void Dispose()
-        {
-            _mainPanelProvider.StartSpawnButton.OnButtonClicked -= StartSpawnCandles;
-            _mainPanelProvider.StopSpawnButton.OnButtonClicked -= StopSpawn;
         }
         
         private async void InitializeCandles()
@@ -50,7 +39,7 @@ namespace Core.Candles
             SpawnCandleSequenceInstantly(_settings.CandlesPoolCount);
         }
         
-        private async void StartSpawnCandles()
+        public async void StartSpawnCandles()
         {
             if (IsSpawning)
             {
@@ -82,7 +71,7 @@ namespace Core.Candles
             _spawnCandlesCts = null;
         }
 
-        private void StopSpawn()
+        public void StopSpawn()
         {
             _spawnCandlesCts?.Cancel();
         }

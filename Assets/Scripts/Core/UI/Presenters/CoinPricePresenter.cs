@@ -1,5 +1,6 @@
 using System;
 using Core.Candles;
+using Core.UI.Common;
 using Core.UI.Providers;
 using Zenject;
 
@@ -10,7 +11,7 @@ namespace Core.UI.Presenters
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly CoreEventBus _coreEventBus;
         
-        private CoinPriceProvider _coinPriceProvider;
+        private CurrencyProvider _coinPriceProvider;
         
         public float CurrentPrice { get; private set; }
         
@@ -18,18 +19,18 @@ namespace Core.UI.Presenters
         {
             _coinPriceProvider = _mainPanelProvider.CoinPriceProvider;
             
-            _coreEventBus.OnCandleSpawned += UpdateCurrentPrice;
+            _coreEventBus.OnCurrentPriceUpdated += UpdateCurrentPrice;
         }
 
         public void Dispose()
         {
-            _coreEventBus.OnCandleSpawned -= UpdateCurrentPrice;
+            _coreEventBus.OnCurrentPriceUpdated -= UpdateCurrentPrice;
         }
         
         private void UpdateCurrentPrice(CandlePresenter currentCandle)
         {
             CurrentPrice = currentCandle.CurrentPrice;
-            _coinPriceProvider.UpdatePriceText(CurrentPrice);
+            _coinPriceProvider.SetValue(CurrentPrice);
         }
     }
 }

@@ -26,6 +26,12 @@ namespace Core.UI
             
             Container.BindInterfacesAndSelfTo<PriceLinePresenter>()
                 .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<PositionSizeSelectPresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CurrentPositionPresenter>()
+                .AsSingle();
         }
     }
 }

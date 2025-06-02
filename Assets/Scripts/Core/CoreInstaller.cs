@@ -33,6 +33,9 @@ namespace Core
             
             Container.BindInterfacesAndSelfTo<CoreEventBus>()
                 .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CoreEntryController>()
+                .AsSingle();
 
             Container.BindInterfacesAndSelfTo<CandleSequenceController>()
                 .AsSingle();
