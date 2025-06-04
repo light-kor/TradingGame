@@ -8,7 +8,7 @@ namespace Core.UI.Providers
     {
         [Required]
         [SerializeField]
-        private CurrencyProvider playerMoneyProvider;
+        private BalanceProvider balanceProvider;
         
         [Required]
         [SerializeField]
@@ -38,7 +38,7 @@ namespace Core.UI.Providers
         [SerializeField]
         private CurrentPositionProvider currentPositionProvider;
         
-        public CurrencyProvider PlayerMoneyProvider => playerMoneyProvider;
+        public BalanceProvider BalanceProvider => balanceProvider;
         public CurrencyProvider CoinPriceProvider => coinPriceProvider;
         public PriceLineProvider PriceLineProvider => priceLineProvider;
         public PositionSizeSelectProvider PositionSizeSelectProvider => positionSizeSelectProvider;

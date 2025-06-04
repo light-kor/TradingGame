@@ -1,5 +1,4 @@
 using System;
-using Common.Player;
 using Core.Candles;
 using Core.UI.Presenters;
 using Core.UI.Providers;
@@ -9,11 +8,11 @@ namespace Core
 {
     public class CoreEntryController : IInitializable, IDisposable
     {
+        [Inject] private readonly PositionSizeSelectPresenter _positionSizeSelectPresenter;
         [Inject] private readonly CandleSequenceController _candleSequenceController;
         [Inject] private readonly CurrentPositionPresenter _currentPositionPresenter;
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
-        [Inject] private readonly PositionSizeSelectPresenter _positionSizeSelectPresenter;
-        [Inject] private readonly MoneyFacade _moneyFacade;
+        [Inject] private readonly BalancePresenter _balancePresenter;
         
         public void Initialize()
         {
@@ -39,17 +38,6 @@ namespace Core
             StartTrade(false);
         }
         
-        private void ClosePosition()
-        {
-            int margin = _currentPositionPresenter.InitialMargin;
-            int pnl = _currentPositionPresenter.Pnl;
-            int result = margin + pnl;
-            _moneyFacade.IncreaseMoney(result);
-            
-            _currentPositionPresenter.ClosePosition();
-            _candleSequenceController.StopSpawn();
-        }
-        
         private void StartTrade(bool isLong)
         {
             int margin = _positionSizeSelectPresenter.PositionSize;
@@ -57,12 +45,22 @@ namespace Core
             if (margin <= 0)
                 return;
             
-            _moneyFacade.DecreaseMoney(margin);
+            _balancePresenter.DecreaseBalance(margin);
             
             float currentPrice = _candleSequenceController.CurrentPrice;
             _currentPositionPresenter.InitPosition(margin, currentPrice, isLong);
-            
             _candleSequenceController.StartSpawnCandles();
+        }
+        
+        private void ClosePosition()
+        {
+            int margin = _currentPositionPresenter.InitialMargin;
+            int pnl = _currentPositionPresenter.Pnl;
+            int result = margin + pnl;
+            
+            _balancePresenter.IncreaseBalance(result);
+            _currentPositionPresenter.ClosePosition();
+            _candleSequenceController.StopSpawn();
         }
     }
 }
