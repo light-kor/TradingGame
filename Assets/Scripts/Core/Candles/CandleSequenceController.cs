@@ -18,27 +18,27 @@ namespace Core.Candles
         [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly CoreEventBus _coreEventBus;
         [Inject] private readonly GameSettings _settings;
-        
+
         private CancellationTokenSource _spawnCandlesCts;
         private float _currentClosePrice;
         private int _currentXPosition;
-        
+
+        private Vector3 LastClosePosition => CurrentCandlePresenter?.CurrentPricePosition ?? Vector3.zero;
         public bool IsSpawning { get; private set; }
-        public CandlePresenter LastCandlePresenter { get; private set; }
-        public Vector3 LastCandleClosePosition => LastCandlePresenter.GetClosePricePosition();
-        public float CurrentPrice => LastCandlePresenter.CurrentPrice;
+        public CandlePresenter CurrentCandlePresenter { get; private set; }
 
         public void Initialize()
         {
+            _currentClosePrice = _settings.InitialPrice;
             InitializeCandles();
         }
-        
+
         private async void InitializeCandles()
         {
             await _candleProviderPool.InitializePoolAsync();
             SpawnCandleSequenceInstantly(_settings.CandlesPoolCount);
         }
-        
+
         public async void StartSpawnCandles()
         {
             if (IsSpawning)
@@ -46,26 +46,26 @@ namespace Core.Candles
                 StopSpawn();
                 await WaitUntilSpawningFinishedAsync();
             }
-            
+
             IsSpawning = true;
             _spawnCandlesCts = new CancellationTokenSource();
             SpawnCandleInfinite(_spawnCandlesCts.Token);
         }
-        
-        
+
+
         private async void SpawnCandleInfinite(CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
                 var candle = CreateNewCandle();
                 await _candleSpawnAnimationFacade.AnimateCandleAsync(candle);
-            
-                if (token.IsCancellationRequested) 
+
+                if (token.IsCancellationRequested)
                     break;
-            
-                _cameraMoveController.MoveCameraWithAnimation(LastCandleClosePosition);
+
+                _cameraMoveController.MoveCameraWithAnimation(LastClosePosition);
             }
-            
+
             IsSpawning = false;
             _spawnCandlesCts?.Dispose();
             _spawnCandlesCts = null;
@@ -75,12 +75,12 @@ namespace Core.Candles
         {
             _spawnCandlesCts?.Cancel();
         }
-        
+
         public UniTask WaitUntilSpawningFinishedAsync()
         {
             return UniTask.WaitUntil(() => !IsSpawning);
         }
-        
+
         private void SpawnCandleSequenceInstantly(int candleCount)
         {
             for (int i = 0; i < candleCount; i++)
@@ -89,8 +89,8 @@ namespace Core.Candles
                 _candleSpawnInstantlyFacade.SpawnCandleInstantly(candle);
             }
 
-            _cameraMoveController.MoveCameraInstantly(LastCandleClosePosition);
-            _coreEventBus.FireCurrentPriceUpdated(LastCandlePresenter);
+            _cameraMoveController.MoveCameraInstantly(LastClosePosition);
+            _coreEventBus.FireCurrentPriceUpdated(CurrentCandlePresenter);
         }
 
         private CandlePresenter CreateNewCandle()
@@ -100,9 +100,9 @@ namespace Core.Candles
 
             var candlePriceSettings = _candlePriceSettingsFactory.CreateCandlePriceSettings(_currentClosePrice);
             candle.SetPriceSettings(candlePriceSettings);
-            candle.SetPosition(_currentXPosition, _currentClosePrice);
+            candle.SetPosition(_currentXPosition, LastClosePosition.y);
 
-            LastCandlePresenter = candle;
+            CurrentCandlePresenter = candle;
             _currentClosePrice = candle.PriceSettings.ClosePrice;
             _currentXPosition++;
             return candle;

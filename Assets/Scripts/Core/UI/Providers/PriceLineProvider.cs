@@ -1,4 +1,3 @@
-using Core.Candles;
 using TriInspector;
 using UnityEngine;
 
@@ -8,14 +7,12 @@ namespace Core.UI.Providers
     {
         [Required]
         [SerializeField] 
-        public Transform lineTransform;
+        private Transform lineTransform;
         
-        public void UpdateLinePosition(CandlePresenter currentCandle)
+        public void UpdateLinePosition(float priceYPosition)
         {
-            var currentPrice = currentCandle.CurrentPrice;
-            
             var linePosition = lineTransform.position;
-            linePosition.y = currentPrice;
+            linePosition.y = priceYPosition;
             lineTransform.position = linePosition;
         }
     }

@@ -7,39 +7,45 @@ namespace Settings
     [CreateAssetMenu(fileName = "GameSettings", menuName = "Settings/GameSettings")]
     public class GameSettings : ScriptableObject
     {
-        [field: Header("Main settings")] 
+        [field: Title("Main settings")] 
         [field: SerializeField]
         public int CandlesPoolCount { get; private set; }
         
         [field: SerializeField]
         public float CandleSpawnOffset { get; private set; }
         
-        [field: Header("Prefabs")] 
+        [field: Title("Prefabs")] 
         [field: Required]
         [field: SerializeField]
         public CandleProvider CandlePrefab { get; private set; }
-
+        
         [field: SerializeField]
         public Color LongColor { get; private set; }
 
         [field: SerializeField]
         public Color ShortColor { get; private set; }
         
-        [field: Header("Candle width")] 
+        [field: Title("Default candle width")] 
         [field: SerializeField]
         public float BodyWidth { get; private set; }
         
         [field: SerializeField]
         public float WickWidth { get; private set; }
         
-        [field: Header("Candle price size")] 
+        [field: Title("Candle price settings")] 
         [field: SerializeField]
-        public float MinBodySize { get; private set; }
+        public float InitialPrice { get; private set; }
 
         [field: SerializeField]
-        public float MaxBodySize { get; private set; }
+        public float MinBodyPercent { get; private set; }
         
         [field: SerializeField]
-        public float MaxWickSize { get; private set; }
+        public float MaxBodyPercent { get; private set; }
+        
+        [field: SerializeField]
+        public float MaxWickPercent { get; private set; }
+        
+        [field: SerializeField]
+        public float VisualMultiplier { get; private set; }
     }
 }

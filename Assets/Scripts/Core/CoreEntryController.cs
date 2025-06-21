@@ -47,7 +47,7 @@ namespace Core
             
             _balancePresenter.DecreaseBalance(margin);
             
-            float currentPrice = _candleSequenceController.CurrentPrice;
+            float currentPrice = _candleSequenceController.CurrentCandlePresenter.CurrentPrice;
             _currentPositionPresenter.InitPosition(margin, currentPrice, isLong);
             _candleSequenceController.StartSpawnCandles();
         }

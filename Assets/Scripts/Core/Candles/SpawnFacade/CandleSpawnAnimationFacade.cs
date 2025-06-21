@@ -1,4 +1,3 @@
-using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Settings;
@@ -11,54 +10,44 @@ namespace Core.Candles.SpawnFacade
     {
         [Inject] private readonly AnimationSettings _animationSettings;
         [Inject] private readonly CoreEventBus _coreEventBus;
+        [Inject] private readonly GameSettings _settings;
 
         /// <summary>
         /// Анимация движения свечи с телом и хвостом
         /// </summary>
-        public async UniTask AnimateCandleAsync(CandlePresenter presenter, CancellationToken ct = default)
+        public async UniTask AnimateCandleAsync(CandlePresenter presenter)
         {
-            ct.ThrowIfCancellationRequested();
-
+            var scaleData = GetCandleScaleData(presenter.PriceSettings);
+            
             float animDuration = _animationSettings.CandleAnimationDuration;
-            var priceSettings = presenter.PriceSettings;
+            float scaleMoveValue = scaleData.FirstTarget + scaleData.FirstTarget + scaleData.ThirdTarget + 
+                                   (scaleData.ThirdTarget - scaleData.FourthTarget);
+            
+            float firstScaleTime = (scaleData.FirstTarget / scaleMoveValue) * animDuration;
+            float secondScaleTime = firstScaleTime;
+            float thirdScaleTime = (scaleData.ThirdTarget / scaleMoveValue) * animDuration;
+            float fourthScaleTime = ((scaleData.ThirdTarget - scaleData.FourthTarget) / scaleMoveValue) * animDuration;
+            
+            // --- собираем DOTween-последовательность ------------------------
+            Sequence animSequence = DOTween.Sequence();
+            bool isLong = presenter.PriceSettings.IsLong;
             var provider = presenter.Provider;
 
-            // Расчёт размеров сегментов анимации на основе настроек свечи.
-            bool isLong = priceSettings.IsLong;
-            float fourthTargetScale = Mathf.Abs(priceSettings.ClosePrice - priceSettings.OpenPrice);
-
-            float firstTargetScale = isLong
-                ? Mathf.Abs(priceSettings.LowPrice - priceSettings.OpenPrice)
-                : Mathf.Abs(priceSettings.HighPrice - priceSettings.OpenPrice);
-
-            float thirdTargetScale = isLong
-                ? Mathf.Abs(priceSettings.HighPrice - priceSettings.OpenPrice)
-                : Mathf.Abs(priceSettings.LowPrice - priceSettings.OpenPrice);
-
-            float scaleMoveValue = firstTargetScale + firstTargetScale + thirdTargetScale + (thirdTargetScale - fourthTargetScale);
-            float firstScaleTime = (firstTargetScale / scaleMoveValue) * animDuration;
-            float secondScaleTime = firstScaleTime;
-            float thirdScaleTime = (thirdTargetScale / scaleMoveValue) * animDuration;
-            float fourthScaleTime = ((thirdTargetScale - fourthTargetScale) / scaleMoveValue) * animDuration;
-
-            // --- собираем DOTween-последовательность ------------------------
-            Sequence animSequence = DOTween.Sequence().SetLink(provider.BodyTransform.gameObject);
-
             // 1-я фаза: вниз/вверх + фитиль
-            animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(isLong)));
-            animSequence.Append(CreateScaleTween(presenter, firstTargetScale, !isLong, firstScaleTime));
-            animSequence.AppendCallback(() => SetWickScaleSizeAndPosition(provider, firstTargetScale, !isLong));
+            animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(!isLong)));
+            animSequence.Append(CreateScaleTween(presenter, scaleData.FirstTarget, !isLong, firstScaleTime));
+            animSequence.AppendCallback(() => SetWickScaleAndPosition(provider, scaleData.SecondTarget, !isLong));
             animSequence.Append(CreateScaleTween(presenter, 0f, !isLong, secondScaleTime));
 
             // 2-я фаза: обратное движение
             animSequence.AppendCallback(() => provider.SetColor(GetColorByDirection(isLong)));
-            animSequence.Append(CreateScaleTween(presenter, thirdTargetScale, isLong, thirdScaleTime));
-            animSequence.AppendCallback(() => SetWickScaleSizeAndPosition(provider, thirdTargetScale, isLong, firstTargetScale));
-            animSequence.Append(CreateScaleTween(presenter, fourthTargetScale, isLong, fourthScaleTime));
+            animSequence.Append(CreateScaleTween(presenter, scaleData.ThirdTarget, isLong, thirdScaleTime));
+            animSequence.AppendCallback(() => SetWickScaleAndPosition(provider, scaleData.ThirdTarget, isLong, scaleData.FirstTarget));
+            animSequence.Append(CreateScaleTween(presenter, scaleData.FourthTarget, isLong, fourthScaleTime));
 
             animSequence.Play();
 
-            await animSequence.ToUniTask(cancellationToken: ct);
+            await animSequence.ToUniTask();
         }
 
         private Tween CreateScaleTween(CandlePresenter presenter, float targetScale, bool isAboveZero, float duration)

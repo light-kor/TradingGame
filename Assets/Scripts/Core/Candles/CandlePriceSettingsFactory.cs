@@ -10,35 +10,37 @@ namespace Core.Candles
         
         public CandlePriceSettings CreateCandlePriceSettings(float openPrice)
         {
+            float closePrice, highPrice, lowPrice;
             bool isLong = GetRandomSign();
-            float closePrice;
-            float highPrice;
-            float lowPrice;
 
             if (isLong)
             {
-                closePrice = openPrice + GetBodyRandomValue();
-                highPrice = closePrice + GetWickRandomValue();
-                lowPrice = openPrice - GetWickRandomValue();
+                closePrice = openPrice + GetBodyRandomChange(openPrice);
+                highPrice = closePrice + GetWickRandomChange(closePrice);
+                lowPrice = openPrice - GetWickRandomChange(openPrice);
             }
             else
             {
-                closePrice = openPrice - GetBodyRandomValue();
-                highPrice = openPrice + GetWickRandomValue();
-                lowPrice = closePrice - GetWickRandomValue();
+                closePrice = openPrice - GetBodyRandomChange(openPrice);
+                highPrice = openPrice + GetWickRandomChange(openPrice);
+                lowPrice = closePrice - GetWickRandomChange(closePrice);
             }
             
             return new CandlePriceSettings(openPrice, closePrice, highPrice, lowPrice, isLong);
         }
         
-        private float GetBodyRandomValue()
+        private float GetBodyRandomChange(float currentPrice)
         {
-            return Random.Range(_settings.MinBodySize, _settings.MaxBodySize);
+            float randomBodyPercent = Random.Range(_settings.MinBodyPercent, _settings.MaxBodyPercent);
+            float bodySize = currentPrice * randomBodyPercent / 100f;
+            return bodySize;
         }
 
-        private float GetWickRandomValue()
+        private float GetWickRandomChange(float currentPrice)
         {
-            return Random.Range(0f, _settings.MaxWickSize);
+            float randomWickPercent = Random.Range(0, _settings.MaxWickPercent);
+            float wickSize = currentPrice * randomWickPercent / 100f;
+            return wickSize;
         }
         
         private bool GetRandomSign()

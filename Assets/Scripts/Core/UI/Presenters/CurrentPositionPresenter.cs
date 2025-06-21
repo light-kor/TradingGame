@@ -6,6 +6,7 @@ using Zenject;
 
 namespace Core.UI.Presenters
 {
+    //TODO: Мб переименовать
     public class CurrentPositionPresenter : IInitializable
     {
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;

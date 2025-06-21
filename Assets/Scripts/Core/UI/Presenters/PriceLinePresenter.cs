@@ -38,7 +38,8 @@ namespace Core.UI.Presenters
             if (_lastCandlePresenter == null)
                 return;
 
-            _priceLineProvider.UpdateLinePosition(_lastCandlePresenter);
+            var currentPricePosition = _lastCandlePresenter.CurrentPricePosition;
+            _priceLineProvider.UpdateLinePosition(currentPricePosition.y);
         }
         
         private void UpdatePriceLineByCameraMoved()

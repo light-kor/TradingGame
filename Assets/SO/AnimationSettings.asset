@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f289cd5f684b438e96b9163c1e1e9938, type: 3}
   m_Name: AnimationSettings
   m_EditorClassIdentifier: 
-  <CandleAnimationDuration>k__BackingField: 0.5
+  <CandleAnimationDuration>k__BackingField: 2
   <CandleAnimationEase>k__BackingField: 16
-  <CameraMoveDuration>k__BackingField: 0.7
+  <CameraMoveDuration>k__BackingField: 1
   <CameraMoveEase>k__BackingField: 7
   <CameraMoveXOffset>k__BackingField: 0

@@ -8,31 +8,49 @@ namespace Core.Candles.SpawnFacade
     {
         [Inject] private readonly GameSettings _settings;
 
+        protected CandleScaleData GetCandleScaleData(CandlePriceSettings priceSettings)
+        {
+            bool isLong = priceSettings.IsLong;
+            
+            float rawFirstScale = isLong
+                ? Mathf.Abs(priceSettings.LowPrice - priceSettings.OpenPrice)
+                : Mathf.Abs(priceSettings.HighPrice - priceSettings.OpenPrice);
+
+            float rawThirdScale = isLong
+                ? Mathf.Abs(priceSettings.HighPrice - priceSettings.OpenPrice)
+                : Mathf.Abs(priceSettings.LowPrice - priceSettings.OpenPrice);
+            
+            float rawFourthScale = Mathf.Abs(priceSettings.ClosePrice - priceSettings.OpenPrice);
+            
+            float scaleMultiplier = _settings.VisualMultiplier;
+            float firstTargetScale = rawFirstScale * scaleMultiplier;
+            float secondTargetScale = firstTargetScale;
+            float thirdTargetScale = rawThirdScale * scaleMultiplier;
+            float fourthTargetScale = rawFourthScale * scaleMultiplier;
+            
+            var scaleData = new CandleScaleData(firstTargetScale, secondTargetScale, thirdTargetScale, fourthTargetScale);
+            return scaleData;
+        }
+        
         protected Color GetColorByDirection(bool isLong)
         {
             return isLong ? _settings.LongColor : _settings.ShortColor;
         }
         
-        protected virtual void UpdateCurrentPrice(CandlePresenter presenter, bool isAboveZero)
-        {
-            float currentScaleY = presenter.Provider.BodyTransform.localScale.y;
-            float currentScaleYWithSign = isAboveZero ? currentScaleY : -currentScaleY;
-            
-            presenter.UpdateCurrentPrice(currentScaleYWithSign);
-        }
-
         protected void UpdateBodyPosition(CandleProvider provider, bool isAboveZero)
         {
-            float currentScale = Mathf.Abs(provider.BodyTransform.localScale.y);
+            Transform bodyTransform = provider.BodyTransform;
+            
+            float currentScale = Mathf.Abs(bodyTransform.localScale.y);
             float halfHeight = currentScale / 2f;
-            Vector3 newLocalPos = provider.BodyTransform.localPosition;
+            Vector3 newLocalPos = bodyTransform.localPosition;
 
             // Если анимация растёт вверх – центр устанавливается на halfHeight, иначе – -halfHeight.
             newLocalPos.y = isAboveZero ? halfHeight : -halfHeight;
-            provider.BodyTransform.localPosition = newLocalPos;
+            bodyTransform.localPosition = newLocalPos;
         }
 
-        protected void SetWickScaleSizeAndPosition(CandleProvider provider, float targetScale,
+        protected void SetWickScaleAndPosition(CandleProvider provider, float targetScale,
             bool isAboveZero, float additionalScale = 0f)
         {
             float currentScale = targetScale + additionalScale;
@@ -66,6 +84,15 @@ namespace Core.Candles.SpawnFacade
             Vector3 localScale = wickTransform.localScale;
             localScale.y = currentScale;
             wickTransform.localScale = localScale;
+        }
+        
+        protected virtual void UpdateCurrentPrice(CandlePresenter presenter, bool isAboveZero)
+        {
+            float currentScaleY = presenter.Provider.BodyTransform.localScale.y;
+            float currentScaleYWithSign = isAboveZero ? currentScaleY : -currentScaleY;
+            float priceChange = currentScaleYWithSign / _settings.VisualMultiplier;
+            
+            presenter.UpdateCurrentPrice(priceChange);
         }
     }
 }
