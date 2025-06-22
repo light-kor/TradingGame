@@ -8,6 +8,11 @@ namespace Core.UI.Providers
         [Required]
         [SerializeField] 
         private Transform lineTransform;
+
+        public void SetActive(bool state)
+        {
+            gameObject.SetActive(state);
+        }
         
         public void UpdateLinePosition(float priceYPosition)
         {

@@ -24,7 +24,10 @@ namespace Core.UI
             Container.BindInterfacesAndSelfTo<CoinPricePresenter>()
                 .AsSingle();
             
-            Container.BindInterfacesAndSelfTo<PriceLinePresenter>()
+            Container.BindInterfacesAndSelfTo<CurrentPriceLinePresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<EnterPriceLinePresenter>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<PositionSizeSelectPresenter>()

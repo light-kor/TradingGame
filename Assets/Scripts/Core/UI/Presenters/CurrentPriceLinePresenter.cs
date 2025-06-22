@@ -5,7 +5,7 @@ using Zenject;
 
 namespace Core.UI.Presenters
 {
-    public class PriceLinePresenter : IInitializable, IDisposable
+    public class CurrentPriceLinePresenter : IInitializable, IDisposable
     {
         [Inject] private readonly CandleSequenceController _candleSequenceController;
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
@@ -15,7 +15,7 @@ namespace Core.UI.Presenters
         
         public void Initialize()
         {
-            _priceLineProvider = _mainPanelProvider.PriceLineProvider;
+            _priceLineProvider = _mainPanelProvider.CurrentPriceLineProvider;
             
             _coreEventBus.OnCurrentPriceUpdated += UpdateLastCandleData;
             _coreEventBus.OnCameraMoved += UpdatePriceLineByCameraMoved;

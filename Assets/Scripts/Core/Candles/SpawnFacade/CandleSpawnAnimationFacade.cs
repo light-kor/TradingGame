@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using Settings;
-using UnityEngine;
 using Zenject;
 
 namespace Core.Candles.SpawnFacade

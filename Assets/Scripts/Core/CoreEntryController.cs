@@ -13,32 +13,33 @@ namespace Core
         [Inject] private readonly CurrentPositionPresenter _currentPositionPresenter;
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly BalancePresenter _balancePresenter;
+        [Inject] private readonly CoreEventBus _coreEventBus;
         
         public void Initialize()
         {
-            _mainPanelProvider.LongButton.OnButtonClicked += StartLong;
-            _mainPanelProvider.ShortButton.OnButtonClicked += StartShort;
+            _mainPanelProvider.LongButton.OnButtonClicked += OpenLongPosition;
+            _mainPanelProvider.ShortButton.OnButtonClicked += OpenShortPosition;
             _mainPanelProvider.ClosePositionButton.OnButtonClicked += ClosePosition;
         }
         
         public void Dispose()
         {
-            _mainPanelProvider.LongButton.OnButtonClicked -= StartLong;
-            _mainPanelProvider.ShortButton.OnButtonClicked -= StartShort;
+            _mainPanelProvider.LongButton.OnButtonClicked -= OpenLongPosition;
+            _mainPanelProvider.ShortButton.OnButtonClicked -= OpenShortPosition;
             _mainPanelProvider.ClosePositionButton.OnButtonClicked -= ClosePosition;
         }
         
-        private void StartLong()
+        private void OpenLongPosition()
         {
-            StartTrade(true);
+            OpenPosition(true);
         }
         
-        private void StartShort()
+        private void OpenShortPosition()
         {
-            StartTrade(false);
+            OpenPosition(false);
         }
         
-        private void StartTrade(bool isLong)
+        private void OpenPosition(bool isLong)
         {
             int margin = _positionSizeSelectPresenter.PositionSize;
             
@@ -47,6 +48,7 @@ namespace Core
             
             _balancePresenter.DecreaseBalance(margin);
             
+            _coreEventBus.FirePositionOpened();
             float currentPrice = _candleSequenceController.CurrentCandlePresenter.CurrentPrice;
             _currentPositionPresenter.InitPosition(margin, currentPrice, isLong);
             _candleSequenceController.StartSpawnCandles();
@@ -61,6 +63,7 @@ namespace Core
             _balancePresenter.IncreaseBalance(result);
             _currentPositionPresenter.ClosePosition();
             _candleSequenceController.StopSpawn();
+            _coreEventBus.FirePositionClosed();
         }
     }
 }

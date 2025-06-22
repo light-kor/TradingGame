@@ -16,7 +16,11 @@ namespace Core.UI.Providers
         
         [Required]
         [SerializeField]
-        private PriceLineProvider priceLineProvider;
+        private PriceLineProvider currentPriceLineProvider;
+        
+        [Required]
+        [SerializeField]
+        private PriceLineProvider enterPriceLineProvider;
         
         [Required]
         [SerializeField]
@@ -40,7 +44,8 @@ namespace Core.UI.Providers
         
         public BalanceProvider BalanceProvider => balanceProvider;
         public CurrencyProvider CoinPriceProvider => coinPriceProvider;
-        public PriceLineProvider PriceLineProvider => priceLineProvider;
+        public PriceLineProvider CurrentPriceLineProvider => currentPriceLineProvider;
+        public PriceLineProvider EnterPriceLineProvider => enterPriceLineProvider;
         public PositionSizeSelectProvider PositionSizeSelectProvider => positionSizeSelectProvider;
         public ButtonProvider LongButton => longButton;
         public ButtonProvider ShortButton => shortButton;
