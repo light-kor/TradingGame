@@ -67,6 +67,12 @@ namespace Core
             
             Container.BindInterfacesAndSelfTo<CoreInitializer>()
                 .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CoinInitializeFacade>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<ChangeCoinHandler>()
+                .AsSingle();
         }
     }
 }

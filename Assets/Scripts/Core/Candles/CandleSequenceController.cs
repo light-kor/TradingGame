@@ -30,6 +30,8 @@ namespace Core.Candles
         public void InitializeCoin(float initialPrice)
         {
             _currentXPosition = 0;
+            CurrentCandlePresenter = null;
+
             _currentClosePrice = initialPrice;
             SpawnCandleSequenceInstantly(_settings.CandlesPoolCount);
         }

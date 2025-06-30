@@ -1,4 +1,3 @@
-using Core.Candles;
 using Core.Pool;
 using Zenject;
 
@@ -6,22 +5,18 @@ namespace Core
 {
     public class CoreInitializer : IInitializable
     {
-        [Inject] private readonly CandleSequenceController _candleSequenceController;
+        [Inject] private readonly CoinInitializeFacade _coinInitializeFacade;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
-        [Inject] private readonly CurrentCoinFacade _currentCoinFacade;
         
         public void Initialize()
         {
-            _currentCoinFacade.CreateCurrentCoin();
-            var coinPattern = _currentCoinFacade.GetCurrentPattern();
-            
-            InitializeCandles(coinPattern.InitialPrice);
+            InitializeFirstCoin();
         }
 
-        private async void InitializeCandles(float initialPrice)
+        private async void InitializeFirstCoin()
         {
             await _candleProviderPool.InitializePoolAsync();
-            _candleSequenceController.InitializeCoin(initialPrice);
+            _coinInitializeFacade.InitializeRandomCoin();
         }
     }
 }
