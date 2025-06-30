@@ -14,10 +14,15 @@ namespace Settings
         [SerializeField] 
         private AnimationSettings animationSettings;
         
+        [Required]
+        [SerializeField] 
+        private PriceMovePatternsRepository priceMovePatternsRepository;
+        
         public override void InstallBindings()
         {
             Container.BindInstance(gameSettings).AsSingle();
             Container.BindInstance(animationSettings).AsSingle();
+            Container.BindInstance(priceMovePatternsRepository).AsSingle();
         }
     }
 }

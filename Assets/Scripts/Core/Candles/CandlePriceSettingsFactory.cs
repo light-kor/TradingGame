@@ -6,12 +6,15 @@ namespace Core.Candles
 {
     public class CandlePriceSettingsFactory
     {
-        [Inject] private readonly GameSettings _settings;
+        [Inject] private readonly CurrentCoinFacade _currentCoinFacade;
+        private PriceMovePatternSettings _currentPattern;
         
         public CandlePriceSettings CreateCandlePriceSettings(float openPrice)
         {
+            _currentPattern = _currentCoinFacade.GetCurrentPattern();
             float closePrice, highPrice, lowPrice;
             bool isLong = GetRandomSign();
+            
 
             if (isLong)
             {
@@ -31,14 +34,14 @@ namespace Core.Candles
         
         private float GetBodyRandomChange(float currentPrice)
         {
-            float randomBodyPercent = Random.Range(_settings.MinBodyPercent, _settings.MaxBodyPercent);
+            float randomBodyPercent = Random.Range(_currentPattern.MinBodyPercent, _currentPattern.MaxBodyPercent);
             float bodySize = currentPrice * randomBodyPercent / 100f;
             return bodySize;
         }
 
         private float GetWickRandomChange(float currentPrice)
         {
-            float randomWickPercent = Random.Range(0, _settings.MaxWickPercent);
+            float randomWickPercent = Random.Range(0, _currentPattern.MaxWickPercent);
             float wickSize = currentPrice * randomWickPercent / 100f;
             return wickSize;
         }

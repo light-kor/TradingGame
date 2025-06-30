@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Core.Candles
 {
-    public class CandleSequenceController : IInitializable
+    public class CandleSequenceController
     {
         [Inject] private readonly CandlePriceSettingsFactory _candlePriceSettingsFactory;
         [Inject] private readonly CandleSpawnAnimationFacade _candleSpawnAnimationFacade;
@@ -27,15 +27,10 @@ namespace Core.Candles
         public bool IsSpawning { get; private set; }
         public CandlePresenter CurrentCandlePresenter { get; private set; }
 
-        public void Initialize()
+        public void InitializeCoin(float initialPrice)
         {
-            _currentClosePrice = _settings.InitialPrice;
-            InitializeCandles();
-        }
-
-        private async void InitializeCandles()
-        {
-            await _candleProviderPool.InitializePoolAsync();
+            _currentXPosition = 0;
+            _currentClosePrice = initialPrice;
             SpawnCandleSequenceInstantly(_settings.CandlesPoolCount);
         }
 

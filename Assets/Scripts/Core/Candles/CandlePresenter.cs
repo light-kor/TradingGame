@@ -1,26 +1,24 @@
 using Settings;
 using UnityEngine;
+using Zenject;
 
 namespace Core.Candles
 {
     public class CandlePresenter
     {
-        private readonly GameSettings _gameSettings;
+        [Inject] private readonly CurrentCoinFacade _currentCoinFacade;
+        [Inject] private readonly CandleProvider _candleProvider;
+        [Inject] private readonly GameSettings _gameSettings;
+
         public CandlePriceSettings PriceSettings { get; private set; }
-        public CandleProvider Provider { get; }
         public float CurrentPrice { get; private set; }
         public Vector3 CurrentPricePosition{ get; private set; }
-        
-        public CandlePresenter(GameSettings settings, CandleProvider provider)
-        {
-            _gameSettings = settings;
-            Provider = provider;
-        }
+        public CandleProvider Provider => _candleProvider;
         
         public void PrepareProvider()
         {
-            Provider.SetActive(true);
-            Provider.ResetCandleSize(_gameSettings.BodyWidth, _gameSettings.WickWidth);
+            _candleProvider.SetActive(true);
+            _candleProvider.ResetCandleSize(_gameSettings.BodyWidth, _gameSettings.WickWidth);
         }
         
         public void SetPriceSettings(CandlePriceSettings priceSettings)
@@ -31,7 +29,7 @@ namespace Core.Candles
         public void SetPosition(int xPos, float lastCurrentClosePrice)
         {
             Vector3 newPosition = new Vector3(xPos * _gameSettings.CandleSpawnOffset, lastCurrentClosePrice, 0);
-            Provider.SetPosition(newPosition);
+            _candleProvider.SetPosition(newPosition);
         }
         
         public void UpdateCurrentPrice(float priceChange)
@@ -42,8 +40,10 @@ namespace Core.Candles
 
         private Vector3 GetCurrentPricePosition(float priceChange)
         {
-            var closePricePosition = Provider.transform.position;
-            var bodySizeValue = priceChange * _gameSettings.VisualMultiplier;
+            var coinPattern = _currentCoinFacade.GetCurrentPattern();
+            
+            var closePricePosition = _candleProvider.transform.position;
+            var bodySizeValue = priceChange * coinPattern.VisualMultiplier;
             closePricePosition.y += bodySizeValue;
             
             return closePricePosition;

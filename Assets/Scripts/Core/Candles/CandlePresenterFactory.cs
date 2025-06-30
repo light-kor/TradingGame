@@ -7,6 +7,7 @@ namespace Core.Candles
 {
     public class CandlePresenterFactory
     {
+        [Inject] private readonly CandlePresenterZenjectFactory _candlePresenterZenjectFactory;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly GameSettings _settings;
 
@@ -23,7 +24,8 @@ namespace Core.Candles
         private CandlePresenter CreateCandlePresenter()
         {
             var candleProvider = _candleProviderPool.GetFreeProvider();
-            CandlePresenter newCandle = new CandlePresenter(_settings, candleProvider);
+            var newCandle = _candlePresenterZenjectFactory.Create(candleProvider);
+            
             _candlesPoll.Enqueue(newCandle);
             return newCandle;
         }

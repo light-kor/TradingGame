@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e2d0c47f4864df2a5436e88803424ba, type: 3}
+  m_Name: PriceMovePatternsRepository
+  m_EditorClassIdentifier: 
+  <DefaultPattern>k__BackingField: {fileID: 11400000, guid: 9d9905515e623734fa27388f8568d79a, type: 2}
+  <LowRickPatterns>k__BackingField:
+  - {fileID: 11400000, guid: 47804b38c588add4abf2ed404043b99a, type: 2}
+  <MidRickPatterns>k__BackingField:
+  - {fileID: 11400000, guid: 270597e3c4b2b8443bb81ac0906a9eb6, type: 2}
+  <HighRickPatterns>k__BackingField:
+  - {fileID: 11400000, guid: 12be16e62ad4f534cb9d985e404141c3, type: 2}
+  <InsaneRickPatterns>k__BackingField:
+  - {fileID: 11400000, guid: b81b982732a326b42a6edd5049f203b6, type: 2}

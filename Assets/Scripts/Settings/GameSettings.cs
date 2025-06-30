@@ -31,21 +31,5 @@ namespace Settings
         
         [field: SerializeField]
         public float WickWidth { get; private set; }
-        
-        [field: Title("Candle price settings")] 
-        [field: SerializeField]
-        public float InitialPrice { get; private set; }
-
-        [field: SerializeField]
-        public float MinBodyPercent { get; private set; }
-        
-        [field: SerializeField]
-        public float MaxBodyPercent { get; private set; }
-        
-        [field: SerializeField]
-        public float MaxWickPercent { get; private set; }
-        
-        [field: SerializeField]
-        public float VisualMultiplier { get; private set; }
     }
 }

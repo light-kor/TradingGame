@@ -6,6 +6,7 @@ namespace Core.Candles.SpawnFacade
 {
     public abstract class CandleSpawnFacadeBase
     {
+        [Inject] private readonly CurrentCoinFacade _currentCoinFacade;
         [Inject] private readonly GameSettings _settings;
 
         protected CandleScaleData GetCandleScaleData(CandlePriceSettings priceSettings)
@@ -22,7 +23,8 @@ namespace Core.Candles.SpawnFacade
             
             float rawFourthScale = Mathf.Abs(priceSettings.ClosePrice - priceSettings.OpenPrice);
             
-            float scaleMultiplier = _settings.VisualMultiplier;
+            var coinPattern = _currentCoinFacade.GetCurrentPattern();
+            float scaleMultiplier = coinPattern.VisualMultiplier;
             float firstTargetScale = rawFirstScale * scaleMultiplier;
             float secondTargetScale = firstTargetScale;
             float thirdTargetScale = rawThirdScale * scaleMultiplier;
@@ -88,9 +90,11 @@ namespace Core.Candles.SpawnFacade
         
         protected virtual void UpdateCurrentPrice(CandlePresenter presenter, bool isAboveZero)
         {
+            var coinPattern = _currentCoinFacade.GetCurrentPattern();
+            
             float currentScaleY = presenter.Provider.BodyTransform.localScale.y;
             float currentScaleYWithSign = isAboveZero ? currentScaleY : -currentScaleY;
-            float priceChange = currentScaleYWithSign / _settings.VisualMultiplier;
+            float priceChange = currentScaleYWithSign / coinPattern.VisualMultiplier;
             
             presenter.UpdateCurrentPrice(priceChange);
         }

@@ -34,7 +34,7 @@ namespace Core
             Container.BindInterfacesAndSelfTo<CoreEventBus>()
                 .AsSingle();
             
-            Container.BindInterfacesAndSelfTo<CoreEntryController>()
+            Container.BindInterfacesAndSelfTo<TradePositionController>()
                 .AsSingle();
 
             Container.BindInterfacesAndSelfTo<CandleSequenceController>()
@@ -42,6 +42,8 @@ namespace Core
             
             Container.BindInterfacesAndSelfTo<CandlePresenterFactory>()
                 .AsSingle();
+            
+            Container.BindFactory<CandleProvider, CandlePresenter, CandlePresenterZenjectFactory>();
             
             Container.BindInterfacesAndSelfTo<CandlePriceSettingsFactory>()
                 .AsSingle();
@@ -59,6 +61,12 @@ namespace Core
             Container.BindInterfacesAndSelfTo<CandleProviderPool>()
                 .AsSingle()
                 .WithArguments(candleProvidersContainer);
+            
+            Container.BindInterfacesAndSelfTo<CurrentCoinFacade>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CoreInitializer>()
+                .AsSingle();
         }
     }
 }

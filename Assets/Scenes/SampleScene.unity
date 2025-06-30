@@ -1887,7 +1887,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccff4a5fce25b147a4f585e446c3a0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasTransform: {fileID: 402445916}
   balanceProvider: {fileID: 66318281}
   coinPriceProvider: {fileID: 1656636700}
   currentPriceLineProvider: {fileID: 395691652}
@@ -2437,6 +2436,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameSettings: {fileID: 11400000, guid: ff3e1d40fe91d6c4193e4a9646c81d07, type: 2}
   animationSettings: {fileID: 11400000, guid: 2875d7dd833f5bc4b87f8b162520033a, type: 2}
+  priceMovePatternsRepository: {fileID: 11400000, guid: aaebc3247482d2a49a24a0ae8b9c9329, type: 2}
 --- !u!4 &1150503787
 Transform:
   m_ObjectHideFlags: 0
