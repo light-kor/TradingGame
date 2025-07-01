@@ -61,24 +61,18 @@ namespace Core.Candles.SpawnFacade
             SetWickLocalPosition(isAboveZero, wickTransform, targetScale, additionalScale);
             SetWickScale(wickTransform, currentScale);
         }
-
+        
         private void SetWickLocalPosition(bool isAboveZero, Transform wickTransform, float targetScale, float additionalScale)
         {
-            Vector3 newLocalPos = wickTransform.localPosition;
-
-            // Для тени в другую сторону логика чуть сложнее, вот и разделение
-            if (Mathf.Approximately(additionalScale, 0f))
-            {
-                float halfHeight = (targetScale + additionalScale) / 2f;
-                newLocalPos.y = isAboveZero ? halfHeight : -halfHeight;
-            }
+            Vector3 localPos = wickTransform.localPosition;
+            float halfHeight = (targetScale + additionalScale) / 2f;
+            
+            if (isAboveZero)
+                localPos.y = halfHeight - additionalScale;
             else
-            {
-                float halfHeight = targetScale / 2f;
-                newLocalPos.y += isAboveZero ? halfHeight : -halfHeight;
-            }
-
-            wickTransform.localPosition = newLocalPos;
+                localPos.y = halfHeight - targetScale;
+            
+            wickTransform.localPosition = localPos;
         }
 
         private void SetWickScale(Transform wickTransform, float currentScale)
