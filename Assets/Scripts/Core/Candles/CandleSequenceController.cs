@@ -41,7 +41,7 @@ namespace Core.Candles
             if (IsSpawning)
             {
                 StopSpawn();
-                await WaitUntilSpawningFinishedAsync();
+                await UniTask.WaitUntil(() => !IsSpawning);
             }
 
             IsSpawning = true;
@@ -73,12 +73,7 @@ namespace Core.Candles
             _spawnCandlesCts?.Cancel();
         }
 
-        public UniTask WaitUntilSpawningFinishedAsync()
-        {
-            return UniTask.WaitUntil(() => !IsSpawning);
-        }
-
-        private void SpawnCandleSequenceInstantly(int candleCount)
+        private async void SpawnCandleSequenceInstantly(int candleCount)
         {
             for (int i = 0; i < candleCount; i++)
             {
@@ -86,7 +81,9 @@ namespace Core.Candles
                 _candleSpawnInstantlyFacade.SpawnCandleInstantly(candle);
             }
 
+            await UniTask.Yield(PlayerLoopTiming.Update);
             _cameraMoveController.MoveCameraInstantly(LastClosePosition);
+            await UniTask.Yield(PlayerLoopTiming.Update);
             _coreEventBus.FireCurrentPriceUpdated(CurrentCandlePresenter);
         }
 
