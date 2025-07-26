@@ -21,4 +21,3 @@ UserSettings/
 **/*.mp4
 # Generated code (если не нужно):
 **/Generated/**
-**/*.meta
