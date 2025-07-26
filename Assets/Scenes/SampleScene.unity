@@ -3132,6 +3132,7 @@ MonoBehaviour:
   gameSettings: {fileID: 11400000, guid: ff3e1d40fe91d6c4193e4a9646c81d07, type: 2}
   animationSettings: {fileID: 11400000, guid: 2875d7dd833f5bc4b87f8b162520033a, type: 2}
   priceMovePatternsRepository: {fileID: 11400000, guid: aaebc3247482d2a49a24a0ae8b9c9329, type: 2}
+  newsCandlesRepository: {fileID: 11400000, guid: 3712354c517ced845af74223c730e115, type: 2}
 --- !u!4 &1150503787
 Transform:
   m_ObjectHideFlags: 0

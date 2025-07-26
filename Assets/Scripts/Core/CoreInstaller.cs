@@ -1,5 +1,6 @@
 using Common.Player;
 using Core.Candles;
+using Core.Candles.PriceSettings;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
 using TriInspector;
@@ -46,6 +47,12 @@ namespace Core
             Container.BindFactory<CandleProvider, CandlePresenter, CandlePresenterZenjectFactory>();
             
             Container.BindInterfacesAndSelfTo<CandlePriceSettingsFactory>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<NewsCandlePriceSettingsFactory>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<CandlePriceSettingsFacade>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CandleSpawnAnimationFacade>()

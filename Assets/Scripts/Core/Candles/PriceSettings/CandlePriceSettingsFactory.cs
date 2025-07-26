@@ -2,7 +2,7 @@ using Settings;
 using UnityEngine;
 using Zenject;
 
-namespace Core.Candles
+namespace Core.Candles.PriceSettings
 {
     public class CandlePriceSettingsFactory
     {
@@ -13,9 +13,8 @@ namespace Core.Candles
         {
             _currentPattern = _currentCoinFacade.GetCurrentPattern();
             float closePrice, highPrice, lowPrice;
-            bool isLong = GetRandomSign();
+            bool isLong = RandomUtils.IsLong();
             
-
             if (isLong)
             {
                 closePrice = openPrice + GetBodyRandomChange(openPrice);
@@ -44,11 +43,6 @@ namespace Core.Candles
             float randomWickPercent = Random.Range(0, _currentPattern.MaxWickPercent);
             float wickSize = currentPrice * randomWickPercent / 100f;
             return wickSize;
-        }
-        
-        private bool GetRandomSign()
-        {
-            return Random.Range(0, 2) != 0;
         }
     }
 }

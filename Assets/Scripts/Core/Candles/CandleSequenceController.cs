@@ -1,4 +1,5 @@
 using System.Threading;
+using Core.Candles.PriceSettings;
 using Core.Candles.SpawnFacade;
 using Core.Pool;
 using Cysharp.Threading.Tasks;
@@ -10,9 +11,9 @@ namespace Core.Candles
 {
     public class CandleSequenceController
     {
-        [Inject] private readonly CandlePriceSettingsFactory _candlePriceSettingsFactory;
         [Inject] private readonly CandleSpawnAnimationFacade _candleSpawnAnimationFacade;
         [Inject] private readonly CandleSpawnInstantlyFacade _candleSpawnInstantlyFacade;
+        [Inject] private readonly CandlePriceSettingsFacade _candlePriceSettingsFacade;
         [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
         [Inject] private readonly CameraMoveController _cameraMoveController;
         [Inject] private readonly CandleProviderPool _candleProviderPool;
@@ -92,7 +93,7 @@ namespace Core.Candles
             var candle = _candlePresenterFactory.GetFreeCandlePresenter();
             candle.PrepareProvider();
 
-            var candlePriceSettings = _candlePriceSettingsFactory.CreateCandlePriceSettings(_currentClosePrice);
+            var candlePriceSettings = _candlePriceSettingsFacade.CreateCandlePriceSettings(_currentClosePrice);
             candle.SetPriceSettings(candlePriceSettings);
             candle.SetPosition(_currentXPosition, LastClosePosition.y);
 
