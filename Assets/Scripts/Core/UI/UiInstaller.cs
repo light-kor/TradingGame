@@ -12,10 +12,18 @@ namespace Core.UI
         [SerializeField] 
         private CoreMainPanelProvider mainPanelProvider;
         
+        [Required]
+        [SerializeField]
+        private TooltipProvider tooltipPanel;
+        
         public override void InstallBindings()
         {
             Container.Bind<CoreMainPanelProvider>()
                 .FromInstance(mainPanelProvider)
+                .AsSingle();
+            
+            Container.Bind<TooltipProvider>()
+                .FromInstance(tooltipPanel)
                 .AsSingle();
 
             Container.BindInterfacesAndSelfTo<BalancePresenter>()
@@ -34,6 +42,9 @@ namespace Core.UI
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CurrentPositionPresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<RiskInfoPresenter>()
                 .AsSingle();
         }
     }

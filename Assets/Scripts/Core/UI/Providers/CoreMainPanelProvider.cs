@@ -46,6 +46,10 @@ namespace Core.UI.Providers
         [SerializeField]
         private ButtonProvider changeCoinButton;
         
+        [Required]
+        [SerializeField]
+        private ButtonProvider riskInfoButton;
+        
         public BalanceProvider BalanceProvider => balanceProvider;
         public CurrencyProvider CoinPriceProvider => coinPriceProvider;
         public PriceLineProvider CurrentPriceLineProvider => currentPriceLineProvider;
@@ -56,5 +60,6 @@ namespace Core.UI.Providers
         public ButtonProvider ClosePositionButton => closePositionButton;
         public CurrentPositionProvider CurrentPositionProvider => currentPositionProvider;
         public ButtonProvider ChangeCoinButton => changeCoinButton;
+        public ButtonProvider RiskInfoButton => riskInfoButton;
     }
 }
