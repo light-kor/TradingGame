@@ -17,3 +17,6 @@ MonoBehaviour:
   <CameraMoveDuration>k__BackingField: 1
   <CameraMoveEase>k__BackingField: 7
   <CameraMoveXOffset>k__BackingField: 0
+  <NewsPopupSlideDuration>k__BackingField: 0.5
+  <NewsPopupSlideEase>k__BackingField: 16
+  <NewsPopupDisplayDuration>k__BackingField: 3

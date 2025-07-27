@@ -22,5 +22,15 @@ namespace Settings
         
         [field: SerializeField]
         public float CameraMoveXOffset { get; private set; }
+        
+        [field: Header("News popup")] 
+        [field: SerializeField]
+        public float NewsPopupSlideDuration { get; private set; }
+        
+        [field: SerializeField]
+        public Ease NewsPopupSlideEase { get; private set; }
+        
+        [field: SerializeField]
+        public float NewsPopupDisplayDuration { get; private set; }
     }
 }

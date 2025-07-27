@@ -55,7 +55,7 @@ namespace Core.Candles
         {
             while (!token.IsCancellationRequested)
             {
-                var candle = CreateNewCandle();
+                var candle = CreateNewCandle(false);
                 await _candleSpawnAnimationFacade.AnimateCandleAsync(candle);
 
                 if (token.IsCancellationRequested)
@@ -78,7 +78,7 @@ namespace Core.Candles
         {
             for (int i = 0; i < candleCount; i++)
             {
-                var candle = CreateNewCandle();
+                var candle = CreateNewCandle(true);
                 _candleSpawnInstantlyFacade.SpawnCandleInstantly(candle);
             }
 
@@ -88,12 +88,15 @@ namespace Core.Candles
             _coreEventBus.FireCurrentPriceUpdated(CurrentCandlePresenter);
         }
 
-        private CandlePresenter CreateNewCandle()
+        private CandlePresenter CreateNewCandle(bool isInstantlySpawn)
         {
             var candle = _candlePresenterFactory.GetFreeCandlePresenter();
             candle.PrepareProvider();
 
-            var candlePriceSettings = _candlePriceSettingsFacade.CreateCandlePriceSettings(_currentClosePrice);
+            var candlePriceSettings = isInstantlySpawn 
+                ? _candlePriceSettingsFacade.CreateDefaultCandlePriceSettings(_currentClosePrice) 
+                : _candlePriceSettingsFacade.CreateRandomCandlePriceSettings(_currentClosePrice);
+            
             candle.SetPriceSettings(candlePriceSettings);
             candle.SetPosition(_currentXPosition, LastClosePosition.y);
 

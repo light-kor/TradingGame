@@ -16,6 +16,10 @@ namespace Core.UI
         [SerializeField]
         private TooltipProvider tooltipPanel;
         
+        [Required]
+        [SerializeField]
+        private NewsPopupProvider newsPopupProvider;
+        
         public override void InstallBindings()
         {
             Container.Bind<CoreMainPanelProvider>()
@@ -24,6 +28,10 @@ namespace Core.UI
             
             Container.Bind<TooltipProvider>()
                 .FromInstance(tooltipPanel)
+                .AsSingle();
+            
+            Container.Bind<NewsPopupProvider>()
+                .FromInstance(newsPopupProvider)
                 .AsSingle();
 
             Container.BindInterfacesAndSelfTo<BalancePresenter>()
@@ -45,6 +53,9 @@ namespace Core.UI
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<RiskInfoPresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<NewsPopupPresenter>()
                 .AsSingle();
         }
     }

@@ -1,3 +1,4 @@
+using Core.UI.Presenters;
 using Settings;
 using UnityEngine;
 using Zenject;
@@ -9,8 +10,9 @@ namespace Core.Candles.PriceSettings
         [Inject] private readonly CandlePriceSettingsFactory _normalFactory;
         [Inject] private readonly NewsCandlePriceSettingsFactory _newsFactory;
         [Inject] private readonly NewsCandlesRepository _newsCandlesRepository;
+        [Inject] private readonly NewsPopupPresenter _newsPopupPresenter;
         
-        public CandlePriceSettings CreateCandlePriceSettings(float openPrice)
+        public CandlePriceSettings CreateRandomCandlePriceSettings(float openPrice)
         {
             if (ShouldSpawnNewsCandle())
             {
@@ -18,11 +20,16 @@ namespace Core.Candles.PriceSettings
 
                 if (hasNews)
                 {
-                    //TODO: Show news popup
+                    _newsPopupPresenter.ShowNewsPopup(settings);
                     return settings;
                 }
             }
             
+            return CreateDefaultCandlePriceSettings(openPrice);
+        }
+        
+        public CandlePriceSettings CreateDefaultCandlePriceSettings(float openPrice)
+        {
             return _normalFactory.CreateCandlePriceSettings(openPrice);
         }
 
