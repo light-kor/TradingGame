@@ -9,7 +9,6 @@ namespace Core.Candles.SpawnFacade
     {
         [Inject] private readonly AnimationSettings _animationSettings;
         [Inject] private readonly CoreEventBus _coreEventBus;
-        [Inject] private readonly GameSettings _settings;
 
         /// <summary>
         /// Анимация движения свечи с телом и хвостом

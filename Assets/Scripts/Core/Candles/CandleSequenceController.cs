@@ -16,7 +16,6 @@ namespace Core.Candles
         [Inject] private readonly CandlePriceSettingsFacade _candlePriceSettingsFacade;
         [Inject] private readonly CandlePresenterFactory _candlePresenterFactory;
         [Inject] private readonly CameraMoveController _cameraMoveController;
-        [Inject] private readonly CandleProviderPool _candleProviderPool;
         [Inject] private readonly CoreEventBus _coreEventBus;
         [Inject] private readonly GameSettings _settings;
 

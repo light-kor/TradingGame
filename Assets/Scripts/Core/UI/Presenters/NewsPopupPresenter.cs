@@ -13,7 +13,6 @@ namespace Core.UI.Presenters
     /// </summary>
     public class NewsPopupPresenter : IDisposable
     {
-        [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
         [Inject] private readonly NewsPopupProvider _newsPopupProvider;
         [Inject] private readonly AnimationSettings _animationSettings;
         [Inject] private readonly GameSettings _settings;

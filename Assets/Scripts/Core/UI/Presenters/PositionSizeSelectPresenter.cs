@@ -8,8 +8,6 @@ namespace Core.UI.Presenters
     public class PositionSizeSelectPresenter : IInitializable, IDisposable
     {
         [Inject] private readonly CoreMainPanelProvider _mainPanelProvider;
-        [Inject] private readonly CoinPricePresenter _coinPricePresenter;
-        [Inject] private readonly CoreEventBus _coreEventBus;
         [Inject] private readonly MoneyFacade _moneyFacade;
         
         private PositionSizeSelectProvider _positionSizeSelectProvider;
