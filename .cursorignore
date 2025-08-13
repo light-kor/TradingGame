@@ -1,23 +1,69 @@
-# Unity garbage
-Library/
-Temp/
-Obj/
-Logs/
-Build/
-Builds/
-UserSettings/
+# Игнорируем ненужные файлы в Unity проекте
+
+# Игнорируем префабы, метаданные и графические файлы
+*.prefab
+*.json
+*.bytes
+*.unity
+*.meta
+*.png
+*.jpg
+*.jpeg
+*.tga
+*.fbx
+*.max
+*.FBX
+*.bmp
+*.gif
+*.psd
+*.tiff
+*.exr
+*.svg
+*.hdr
+*.mp4
+*.avi
+*.mov
+*.flv
+*.wmv
+*.wav
+*.mp3
+*.ogg
+*.flac
+*.aac
+*.m4a
+
+# Игнорируем материалы и анимации
+*.mat
+*.anim
+*.controller
+*.overrideController
+*.physicMaterial
+*.terrainlayer
+*.lighting
+
+# Игнорируем временные файлы и кеши
+**/Library/**
+**/Temp/**
+**/Logs/**
+**/UserSettings/**
+**/MemoryCaptures/**
+**/CrashReports/**
+**/StreamingAssets/**
+**/Build/**
+**/Builds/**
+**/Generated/**
+
+# Игнорируем файлы версионного контроля
+**/.git/**
+**/.svn/**
+**/.hg/**
+**/.idea/**
+**/.vs/**# Add directories or file patterns to ignore during indexing (e.g. foo/ or *.csv)
+
+
 # OS & IDE
 .DS_Store
 *.unityproj
 *.sln
 *.csproj
 .vscode/
-.idea/
-# Large assets
-**/*.psd
-**/*.png
-**/*.fbx
-**/*.wav
-**/*.mp4
-# Generated code (если не нужно):
-**/Generated/**
