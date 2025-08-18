@@ -1,3 +1,4 @@
+using Core.TradePosition;
 using Core.UI.Common;
 using TriInspector;
 using UnityEngine;

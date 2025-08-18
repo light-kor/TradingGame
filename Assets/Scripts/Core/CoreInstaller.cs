@@ -2,7 +2,10 @@ using Common.Player;
 using Core.Candles;
 using Core.Candles.PriceSettings;
 using Core.Candles.SpawnFacade;
+using Core.GameOver;
 using Core.Pool;
+using Core.TradePosition;
+using Core.TradePosition.Close;
 using TriInspector;
 using UnityEngine;
 using Zenject;
@@ -34,8 +37,11 @@ namespace Core
             
             Container.BindInterfacesAndSelfTo<CoreEventBus>()
                 .AsSingle();
+
+            Container.BindInterfacesAndSelfTo<CurrentPositionController>()
+                .AsSingle();
             
-            Container.BindInterfacesAndSelfTo<TradePositionController>()
+            Container.BindInterfacesAndSelfTo<PositionCloseChecker>()
                 .AsSingle();
 
             Container.BindInterfacesAndSelfTo<CandleSequenceController>()
@@ -59,6 +65,9 @@ namespace Core
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CandleSpawnInstantlyFacade>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<GameOverController>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CameraMoveController>()

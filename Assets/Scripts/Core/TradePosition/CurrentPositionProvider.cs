@@ -2,7 +2,7 @@ using Core.UI.Common;
 using TriInspector;
 using UnityEngine;
 
-namespace Core.UI.Providers
+namespace Core.TradePosition
 {
     public class CurrentPositionProvider : MonoBehaviour
     {

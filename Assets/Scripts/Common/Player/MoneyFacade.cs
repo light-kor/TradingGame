@@ -15,17 +15,34 @@ namespace Common.Player
         
         public void Initialize()
         {
-            if (PlayerPrefsUtils.HasKey(Const.MONEY))
+            if (TryLoadSavedMoney(out var savedMoney))
             {
-                int savedMoney = PlayerPrefsUtils.LoadInt(Const.MONEY);
                 UpdateMoneyValue(savedMoney);
-                Debug.LogError($"HasSavedMoney {MoneyValue}");
                 return;
             }
 
+            CreateNewMoneyFund();
+        }
+
+        private bool TryLoadSavedMoney(out int savedMoney)
+        {
+            if (PlayerPrefsUtils.HasKey(Const.MONEY))
+            {
+                savedMoney = PlayerPrefsUtils.LoadInt(Const.MONEY);
+                Debug.LogError($"HasSavedMoney {MoneyValue}");
+                return true;
+            }
+
+            savedMoney = 0;
+            return false;
+        }
+
+        public void CreateNewMoneyFund()
+        {
             var source = _fundSourceRepository.GetRandomFundSource();
-            UpdateMoneyValue(source.Value);
             Debug.LogError($"GetRandomFundSource {source.Header} - {source.Value}");
+
+            UpdateMoneyValue(source.Value);
         }
         
         public void IncreaseMoney(int change)

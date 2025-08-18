@@ -1,7 +1,6 @@
 using System.Threading;
 using Core.Candles.PriceSettings;
 using Core.Candles.SpawnFacade;
-using Core.Pool;
 using Cysharp.Threading.Tasks;
 using Settings;
 using UnityEngine;

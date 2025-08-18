@@ -1,5 +1,6 @@
 using System;
 using Core.Candles;
+using Core.TradePosition.Close;
 
 namespace Core
 {
@@ -8,7 +9,9 @@ namespace Core
         public event Action<CandlePresenter> OnCurrentPriceUpdated = delegate {  };
         public event Action OnCameraMoved = delegate {  };
         public event Action OnPositionOpened = delegate {  };
-        public event Action OnPositionClosed = delegate {  };
+        public event Action<PositionCloseType> OnPositionClosed = delegate {  };
+        public event Action OnClosePositionPanelShown = delegate {  };
+        public event Action OnGameOverPanelShown = delegate {  };
 
         public void FireCurrentPriceUpdated(CandlePresenter currentCandle)
         {
@@ -25,9 +28,19 @@ namespace Core
             OnPositionOpened.Invoke();
         }
         
-        public void FirePositionClosed()
+        public void FirePositionClosed(PositionCloseType closeType)
         {
-            OnPositionClosed.Invoke();
+            OnPositionClosed.Invoke(closeType);
+        }
+        
+        public void FireClosePositionPanelShown()
+        {
+            OnClosePositionPanelShown.Invoke();
+        }
+        
+        public void FireOnGameOverPanelShown()
+        {
+            OnGameOverPanelShown.Invoke();
         }
     }
 }

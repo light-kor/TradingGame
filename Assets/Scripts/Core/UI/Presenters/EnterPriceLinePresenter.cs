@@ -1,5 +1,6 @@
 using System;
 using Core.Candles;
+using Core.TradePosition.Close;
 using Core.UI.Providers;
 using UnityEngine;
 using Zenject;
@@ -43,7 +44,7 @@ namespace Core.UI.Presenters
             _priceLineProvider.UpdateLinePosition(_priceLinePosition.y);
         }
 
-        private void HidePriceLine()
+        private void HidePriceLine(PositionCloseType _)
         {
             _priceLineProvider.SetActive(false);
         }

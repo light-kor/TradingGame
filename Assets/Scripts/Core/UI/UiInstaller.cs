@@ -1,3 +1,6 @@
+using Core.GameOver;
+using Core.TradePosition;
+using Core.TradePosition.Close;
 using Core.UI.Presenters;
 using Core.UI.Providers;
 using TriInspector;
@@ -20,6 +23,14 @@ namespace Core.UI
         [SerializeField]
         private NewsPopupProvider newsPopupProvider;
         
+        [Required]
+        [SerializeField]
+        private GameOverProvider gameOverProvider;
+        
+        [Required]
+        [SerializeField]
+        private PositionCloseProvider positionCloseProvider;
+        
         public override void InstallBindings()
         {
             Container.Bind<CoreMainPanelProvider>()
@@ -32,6 +43,14 @@ namespace Core.UI
             
             Container.Bind<NewsPopupProvider>()
                 .FromInstance(newsPopupProvider)
+                .AsSingle();
+            
+            Container.Bind<GameOverProvider>()
+                .FromInstance(gameOverProvider)
+                .AsSingle();
+            
+            Container.Bind<PositionCloseProvider>()
+                .FromInstance(positionCloseProvider)
                 .AsSingle();
 
             Container.BindInterfacesAndSelfTo<BalancePresenter>()
@@ -56,6 +75,12 @@ namespace Core.UI
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<NewsPopupPresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<GameOverPresenter>()
+                .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<PositionClosePresenter>()
                 .AsSingle();
         }
     }
