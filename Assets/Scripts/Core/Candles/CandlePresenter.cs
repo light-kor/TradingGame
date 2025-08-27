@@ -1,3 +1,4 @@
+using Core.Candles.SpawnFacade;
 using Settings;
 using UnityEngine;
 using Zenject;
@@ -6,7 +7,7 @@ namespace Core.Candles
 {
     public class CandlePresenter
     {
-        [Inject] private readonly CurrentCoinFacade _currentCoinFacade;
+        [Inject] private readonly CandleVisualMultiplierApplier _candleVisualMultiplierApplier;
         [Inject] private readonly CandleProvider _candleProvider;
         [Inject] private readonly GameSettings _gameSettings;
 
@@ -40,10 +41,10 @@ namespace Core.Candles
 
         private Vector3 GetCurrentPricePosition(float priceChange)
         {
-            var coinPattern = _currentCoinFacade.GetCurrentPattern();
+            float scaleMultiplier = _candleVisualMultiplierApplier.GetVisualMultiplier();
+            float bodySizeValue = priceChange * scaleMultiplier;
             
             var closePricePosition = _candleProvider.transform.position;
-            var bodySizeValue = priceChange * coinPattern.VisualMultiplier;
             closePricePosition.y += bodySizeValue;
             
             return closePricePosition;

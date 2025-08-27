@@ -67,6 +67,9 @@ namespace Core
             Container.BindInterfacesAndSelfTo<CandleSpawnInstantlyFacade>()
                 .AsSingle();
             
+            Container.BindInterfacesAndSelfTo<CandleVisualMultiplierApplier>()
+                .AsSingle();
+            
             Container.BindInterfacesAndSelfTo<GameOverController>()
                 .AsSingle();
             

@@ -38,6 +38,10 @@ namespace Core.Candles.PriceSettings
                 closePrice = openPrice - bodyChange;
                 highPrice = openPrice + wickChange;
                 lowPrice = closePrice - wickChange;
+                
+                closePrice = Mathf.Max(closePrice, 0f);
+                highPrice = Mathf.Max(highPrice, 0f);
+                lowPrice = Mathf.Max(lowPrice, 0f);
             }
             
             Debug.LogError($"НОВОСТЬ: {newsCandleInfo.Title}\n" +
