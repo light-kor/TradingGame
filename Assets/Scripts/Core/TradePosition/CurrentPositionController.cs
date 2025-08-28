@@ -1,6 +1,5 @@
 using System;
 using Core.Candles;
-using Core.GameOver;
 using Core.TradePosition.Close;
 using Core.UI.Presenters;
 using Zenject;
@@ -14,7 +13,6 @@ namespace Core.TradePosition
         [Inject] private readonly CandleSequenceController _candleSequenceController;
         [Inject] private readonly PositionClosePresenter _positionClosePresenter;
         [Inject] private readonly PositionCloseChecker _positionCloseChecker;
-        [Inject] private readonly GameOverController _gameOverController;
         [Inject] private readonly BalancePresenter _balancePresenter;
         [Inject] private readonly CoreEventBus _coreEventBus;
         

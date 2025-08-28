@@ -2,7 +2,6 @@ using Common.Player;
 using Core.Candles;
 using Core.Candles.PriceSettings;
 using Core.Candles.SpawnFacade;
-using Core.GameOver;
 using Core.Pool;
 using Core.TradePosition;
 using Core.TradePosition.Close;
@@ -70,7 +69,7 @@ namespace Core
             Container.BindInterfacesAndSelfTo<CandleVisualMultiplierApplier>()
                 .AsSingle();
             
-            Container.BindInterfacesAndSelfTo<GameOverController>()
+            Container.BindInterfacesAndSelfTo<ClosePositionSequenceController>()
                 .AsSingle();
             
             Container.BindInterfacesAndSelfTo<CameraMoveController>()
