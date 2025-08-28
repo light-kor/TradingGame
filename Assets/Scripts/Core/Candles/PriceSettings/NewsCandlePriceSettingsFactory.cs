@@ -8,11 +8,14 @@ namespace Core.Candles.PriceSettings
     {
         [Inject] private readonly CandlePriceSettingsFactory _originalFactory;
         [Inject] private readonly NewsCandlesRepository _newsCandlesRepository;
+        [Inject] private readonly RandomUtils _randomUtils;
         
         public bool TryCreateNewsCandlePriceSettings(float openPrice, out NewsCandlePriceSettings settings)
         {
             settings = null;
-            var newsCandleInfo = _newsCandlesRepository.GetRandomNewsCandle();
+            
+            bool isLong = _randomUtils.IsLong();
+            var newsCandleInfo = _newsCandlesRepository.GetRandomNewsCandle(isLong);
             
             if (newsCandleInfo == null)
                 return false;
@@ -25,7 +28,6 @@ namespace Core.Candles.PriceSettings
             float wickChange = Mathf.Abs(baseSettings.HighPrice - baseSettings.LowPrice - Mathf.Abs(baseSettings.ClosePrice - baseSettings.OpenPrice)) * newsCandleInfo.VolatilityMultiplier;
             
             float closePrice, highPrice, lowPrice;
-            bool isLong = newsCandleInfo.IsLong; // Направление определяется новостью
             
             if (isLong)
             {

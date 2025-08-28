@@ -1,3 +1,4 @@
+using DevUtils;
 using TriInspector;
 using UnityEngine;
 using Zenject;
@@ -22,12 +23,17 @@ namespace Settings
         [SerializeField] 
         private NewsCandlesRepository newsCandlesRepository;
         
+        [Required]
+        [SerializeField] 
+        private DevTestSettings devTestSettings;
+        
         public override void InstallBindings()
         {
             Container.BindInstance(gameSettings).AsSingle();
             Container.BindInstance(animationSettings).AsSingle();
             Container.BindInstance(priceMovePatternsRepository).AsSingle();
             Container.BindInstance(newsCandlesRepository).AsSingle();
+            Container.BindInstance(devTestSettings).AsSingle();
         }
     }
 }

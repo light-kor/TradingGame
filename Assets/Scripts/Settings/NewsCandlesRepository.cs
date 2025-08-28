@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Core;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -18,9 +17,8 @@ namespace Settings
         [field: SerializeField]
         public List<NewsCandleInfo> NegativeNewsCandles { get; private set; }
         
-        public NewsCandleInfo GetRandomNewsCandle()
+        public NewsCandleInfo GetRandomNewsCandle(bool isLong)
         {
-            bool isLong = RandomUtils.IsLong();
             var candles = isLong ? PositiveNewsCandles : NegativeNewsCandles;
             
             if (candles.Count == 0)

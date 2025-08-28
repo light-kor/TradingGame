@@ -36,6 +36,9 @@ namespace Core
             
             Container.BindInterfacesAndSelfTo<CoreEventBus>()
                 .AsSingle();
+            
+            Container.BindInterfacesAndSelfTo<RandomUtils>()
+                .AsSingle();
 
             Container.BindInterfacesAndSelfTo<CurrentPositionController>()
                 .AsSingle();

@@ -9,6 +9,7 @@ namespace Core.Candles.PriceSettings
     {
         [Inject] private readonly CurrentPositionController _currentPositionController;
         [Inject] private readonly CurrentCoinFacade _currentCoinFacade;
+        [Inject] private readonly RandomUtils _randomUtils;
         private PriceMovePatternSettings _currentPattern;
         private float _currentBasePrice;
         
@@ -18,7 +19,7 @@ namespace Core.Candles.PriceSettings
             _currentBasePrice = GetBasePrice(openPrice);
             
             float closePrice, highPrice, lowPrice;
-            bool isLong = RandomUtils.IsLong();
+            bool isLong = _randomUtils.IsLong();
             
             if (isLong)
             {
